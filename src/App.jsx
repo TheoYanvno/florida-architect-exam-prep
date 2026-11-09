@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { DIVISIONS, AXP_TOTAL_HOURS, SOURCES, formatMinutes, expectedItems } from './lib/are.js';
 import { FLORIDA_STEPS, UF } from './lib/florida.js';
 import { buildPlan, SUGGESTED_ORDER } from './lib/plan.js';
+import Practice from './components/Practice.jsx';
 
 export default function App() {
   const [tab, setTab] = useState('divisions');
@@ -12,10 +13,11 @@ export default function App() {
         <nav aria-label="Sections">
           <button aria-pressed={tab === 'divisions'} onClick={() => setTab('divisions')}>ARE divisions</button>
           <button aria-pressed={tab === 'plan'} onClick={() => setTab('plan')}>Study plan</button>
+          <button aria-pressed={tab === 'practice'} onClick={() => setTab('practice')}>Practice</button>
           <button aria-pressed={tab === 'florida'} onClick={() => setTab('florida')}>Florida license</button>
         </nav>
       </header>
-      <main>{tab === 'divisions' ? <Divisions /> : tab === 'plan' ? <Plan /> : <Florida />}</main>
+      <main>{tab === 'divisions' ? <Divisions /> : tab === 'plan' ? <Plan /> : tab === 'practice' ? <Practice /> : <Florida />}</main>
     </>
   );
 }
