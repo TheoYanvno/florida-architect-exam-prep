@@ -20,3 +20,5 @@ nav { display:flex; gap:8px; } nav button[aria-pressed="true"] { border-color:va
 .panel { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px; }
 .panel h3 { margin:0 0 6px; font-size:1.05rem; } .panel ul { padding-left:18px; } a { color:var(--accent); }
 .steps li { margin:12px 0; } .steps p { margin:4px 0 0; color:var(--muted); }
+.row { display:flex; gap:16px; flex-wrap:wrap; margin:12px 0; } input { font:inherit; padding:6px 8px; border-radius:8px; border:1px solid var(--line); background:var(--panel); color:var(--text); }
+table { width:100%; border-collapse:collapse; } th, td { text-align:left; padding:8px; border-bottom:1px solid var(--line); }

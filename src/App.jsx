@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { DIVISIONS, AXP_TOTAL_HOURS, SOURCES, formatMinutes, expectedItems } from './lib/are.js';
-import { FLORIDA_STEPS } from './lib/florida.js';
+import { FLORIDA_STEPS, UF } from './lib/florida.js';
+import { buildPlan, SUGGESTED_ORDER } from './lib/plan.js';
 
 export default function App() {
   const [tab, setTab] = useState('divisions');
@@ -10,10 +11,11 @@ export default function App() {
         <h1>📐 Florida Architect Exam Prep</h1>
         <nav aria-label="Sections">
           <button aria-pressed={tab === 'divisions'} onClick={() => setTab('divisions')}>ARE divisions</button>
+          <button aria-pressed={tab === 'plan'} onClick={() => setTab('plan')}>Study plan</button>
           <button aria-pressed={tab === 'florida'} onClick={() => setTab('florida')}>Florida license</button>
         </nav>
       </header>
-      <main>{tab === 'divisions' ? <Divisions /> : <Florida />}</main>
+      <main>{tab === 'divisions' ? <Divisions /> : tab === 'plan' ? <Plan /> : <Florida />}</main>
     </>
   );
 }
@@ -52,6 +54,34 @@ function Florida() {
           <li key={s.id}><strong>{s.title}</strong><p>{s.detail}</p></li>
         ))}
       </ol>
+      <h3>University of Florida graduates</h3>
+      <p className="muted">{UF.note} (<a href={UF.source} target="_blank" rel="noreferrer">UF School of Architecture</a>)</p>
+    </section>
+  );
+}
+
+function Plan() {
+  const today = new Date().toISOString().slice(0, 10);
+  const [start, setStart] = useState(today);
+  const [goal, setGoal] = useState(new Date(Date.now() + 30 * 7 * 86400000).toISOString().slice(0, 10));
+  let plan = null, error = '';
+  try { plan = buildPlan(start, goal, SUGGESTED_ORDER); } catch (e) { error = e.message; }
+  return (
+    <section>
+      <h2>Your study plan</h2>
+      <p className="muted">Pick when you start and when you want to be done. Bigger divisions get more weeks, and each one ends with a review week before its exam. The order pairs divisions that share material; it's a suggestion, not an NCARB rule.</p>
+      <div className="row">
+        <label>Start <input type="date" value={start} onChange={e => setStart(e.target.value)} /></label>
+        <label>Done by <input type="date" value={goal} onChange={e => setGoal(e.target.value)} /></label>
+      </div>
+      {error ? <p role="alert">{error}</p> : (
+        <table>
+          <thead><tr><th>Division</th><th>Weeks</th><th>Study from</th><th>Review week</th><th>Take the exam by</th></tr></thead>
+          <tbody>{plan.map(b => (
+            <tr key={b.id}><td>{b.code} · {b.name}</td><td>{b.weeks}</td><td>{b.studyFrom}</td><td>{b.reviewFrom}</td><td>{b.examBy}</td></tr>
+          ))}</tbody>
+        </table>
+      )}
     </section>
   );
 }

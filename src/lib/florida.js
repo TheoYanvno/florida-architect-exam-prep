@@ -27,3 +27,9 @@ export function checklistProgress(done = []) {
   const next = FLORIDA_STEPS.find(s => !set.has(s.id)) || null;
   return { complete, total: FLORIDA_STEPS.length, percent: Math.round((complete / FLORIDA_STEPS.length) * 100), next };
 }
+
+// University of Florida School of Architecture accreditation page, checked November 9, 2026.
+export const UF = {
+  source: 'https://dcp.ufl.edu/architecture/accreditation/',
+  note: "UF's Master of Architecture (Tracks I, II and III) is NAAB-accredited, with the next NAAB visit in 2030. The undergraduate B.Des. in Architecture is pre-professional and does not meet Florida's minimum education requirement on its own.",
+};
