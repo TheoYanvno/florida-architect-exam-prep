@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { DIVISIONS } from '../lib/are.js';
 import { questionsFor, isCorrect, score, shuffled } from '../lib/questions.js';
+import { loadBest, recordBest, saveBest } from '../lib/scores.js';
 
 // Practice: pick a division, answer its questions one at a time (with an optional timer at the ARE's
 // pace), check each answer with its explanation, then see the score by NCARB section.
@@ -9,8 +10,15 @@ export default function Practice() {
   const [division, setDivision] = useState(available[0]?.id || '');
   const [timed, setTimed] = useState(false);
   const [session, setSession] = useState(null);
+  const [best, setBest] = useState(loadBest);
 
-  if (session) return <Session {...session} onDone={() => setSession(null)} />;
+  function finish(division, result) {
+    const next = recordBest(best, division.id, result);
+    if (next.isNew) { setBest(next.best); saveBest(next.best); }
+    return next.isNew;
+  }
+
+  if (session) return <Session {...session} onFinish={finish} onDone={() => setSession(null)} />;
 
   const d = DIVISIONS.find(x => x.id === division);
   return (
@@ -20,7 +28,7 @@ export default function Practice() {
       <div className="row">
         <label>Division
           <select value={division} onChange={e => setDivision(e.target.value)}>
-            {DIVISIONS.map(x => <option key={x.id} value={x.id} disabled={!questionsFor(x.id).length}>{x.code} · {x.name} ({questionsFor(x.id).length})</option>)}
+            {DIVISIONS.map(x => <option key={x.id} value={x.id} disabled={!questionsFor(x.id).length}>{x.code} · {x.name} ({questionsFor(x.id).length}){best[x.id] ? ` · best ${best[x.id].percent}%` : ''}</option>)}
           </select>
         </label>
         <label className="check"><input type="checkbox" checked={timed} onChange={e => setTimed(e.target.checked)} /> Timed at the exam's pace</label>
@@ -31,7 +39,7 @@ export default function Practice() {
   );
 }
 
-function Session({ division, questions, timed, onDone }) {
+function Session({ division, questions, timed, onDone, onFinish }) {
   const [i, setI] = useState(0);
   const [answers, setAnswers] = useState({});
   const [checked, setChecked] = useState(false);
@@ -46,10 +54,13 @@ function Session({ division, questions, timed, onDone }) {
   }, [timed, finished]);
 
   const result = useMemo(() => (finished ? score(questions, answers) : null), [finished, questions, answers]);
+  const [isNewBest, setIsNewBest] = useState(null);
+  useEffect(() => { if (result && isNewBest === null) setIsNewBest(onFinish(division, result)); }, [result]);
   if (result) {
     return (
       <section aria-live="polite">
         <h2>{division.code} practice: {result.correct} of {result.total} ({result.percent}%)</h2>
+        {isNewBest && <p className="ok">New best score for {division.code}! 🎉</p>}
         {left === 0 && <p className="muted">Time ran out; unanswered questions count as wrong.</p>}
         <table>
           <thead><tr><th>Section</th><th>Correct</th></tr></thead>

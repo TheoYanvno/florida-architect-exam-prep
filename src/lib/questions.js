@@ -225,6 +225,55 @@ export const QUESTIONS = [
     choices: ['Cost per square foot', 'Cost per bed or per seat', 'A quantity takeoff priced with unit costs', 'A percentage of last year\'s project'], answer: [2],
     explain: 'With complete documents, an estimator can count quantities of each material and price them, which gives the most reliable figure before bids.',
   },
+  // Construction & Evaluation
+  {
+    id: 'ce-001', division: 'ce', section: 'Administrative Procedures & Protocols', type: 'single',
+    prompt: 'Under AIA A201, who reviews the contractor\'s application for payment and certifies the amount due?',
+    choices: ['The owner\'s lender', 'The architect', 'The building official', 'The surety'], answer: [1],
+    explain: 'The architect reviews each application (often AIA G702 with the G703 continuation sheet) and issues a certificate for payment for the amount it judges is due.',
+  },
+  {
+    id: 'ce-002', division: 'ce', section: 'Construction Observation', type: 'single',
+    prompt: 'What is the purpose of the architect\'s site visits during construction under AIA A201?',
+    choices: ['To supervise the contractor\'s crews', 'To become generally familiar with progress and quality and see whether the work follows the contract documents', 'To make exhaustive, continuous inspections of all work', 'To direct the contractor\'s means and methods'], answer: [1],
+    explain: 'The architect observes to stay generally familiar with the work and report on it. It does not make exhaustive or continuous inspections or control construction means, methods or safety, which stay with the contractor.',
+  },
+  {
+    id: 'ce-003', division: 'ce', section: 'Project Closeout & Evaluation', type: 'single',
+    prompt: 'What does Substantial Completion mean under AIA A201?',
+    choices: ['Every punch list item is finished', 'The work is complete enough that the owner can occupy or use it for its intended purpose', 'The final payment has been made', 'The building permit has been issued'], answer: [1],
+    explain: 'Substantial Completion is the stage when the owner can use the work as intended, even with punch list items left. It\'s recorded with a certificate (AIA G704) and starts many warranties.',
+  },
+  {
+    id: 'ce-004', division: 'ce', section: 'Administrative Procedures & Protocols', type: 'single',
+    prompt: 'When the architect reviews shop drawings, what is the review for?',
+    choices: ['Checking every dimension and quantity for the contractor', 'The limited purpose of checking conformance with the design concept in the contract documents', 'Approving changes to the contract sum', 'Approving the contractor\'s safety program'], answer: [1],
+    explain: 'Submittal review is limited to conformance with the information and design concept in the contract documents. The contractor stays responsible for dimensions, quantities, fabrication and coordination.',
+  },
+  {
+    id: 'ce-005', division: 'ce', section: 'Preconstruction Activities', type: 'single',
+    prompt: 'What is retainage?',
+    choices: ['A bonus for finishing early', 'A part of each progress payment held back until the work is complete', 'The architect\'s fee for construction administration', 'A fine for late submittals'], answer: [1],
+    explain: 'Retainage is a percentage withheld from progress payments to give the owner security that the work, including the punch list, will be finished.',
+  },
+  {
+    id: 'ce-006', division: 'ce', section: 'Administrative Procedures & Protocols', type: 'multi',
+    prompt: 'Which of these are the architect\'s responsibilities during construction administration? Select all that apply.',
+    choices: ['Responding to requests for information (RFIs)', 'Reviewing submittals', 'Certifying applications for payment', 'Directing the contractor\'s construction means and methods'], answer: [0, 1, 2],
+    explain: 'RFIs, submittals and payment certification are core construction administration tasks. Means, methods, sequences and safety belong to the contractor.',
+  },
+  {
+    id: 'ce-007', division: 'ce', section: 'Project Closeout & Evaluation', type: 'single',
+    prompt: 'Under AIA A201, when does the one-year period for correcting work generally begin?',
+    choices: ['At contract signing', 'At the date of Substantial Completion', 'At final payment', 'When the first defect is found'], answer: [1],
+    explain: 'The contractor\'s correction period generally runs for one year from the date of Substantial Completion of the work.',
+  },
+  {
+    id: 'ce-008', division: 'ce', section: 'Preconstruction Activities', type: 'single',
+    prompt: 'The architect needs to change the bidding documents a week before bids are due. What is issued?',
+    choices: ['A change order', 'An addendum', 'A construction change directive', 'A field report'], answer: [1],
+    explain: 'Addenda modify the bidding documents before bids are received and become part of the contract documents. Change orders and directives modify a contract that already exists.',
+  },
 ];
 
 export function questionsFor(division) {

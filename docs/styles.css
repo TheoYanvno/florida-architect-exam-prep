@@ -29,3 +29,4 @@ label { display:flex; flex-direction:column; gap:4px; } label.check { flex-direc
 .choice.picked { border-color:var(--accent); } .choice.right { border-color:var(--good); background:rgba(52,211,153,.12); } .choice.wrong { border-color:var(--bad); background:rgba(248,113,113,.12); }
 .feedback { padding:12px; border-radius:10px; border:1px solid var(--line); display:flex; flex-direction:column; gap:10px; } .feedback.ok { border-color:var(--good); } .feedback.bad { border-color:var(--bad); }
 .error { color:var(--bad); }
+p.ok { color: var(--good); font-weight: 600; }
