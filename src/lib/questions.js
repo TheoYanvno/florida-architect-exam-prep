@@ -51,6 +51,105 @@ export const QUESTIONS = [
     choices: ['Written agreements that define scope', 'Documenting decisions and changes in writing', 'Starting work before the agreement is signed', 'Quality control reviews of documents before issue'], answer: [0, 1, 3],
     explain: 'Clear scope, written records and document reviews all reduce risk. Working before an agreement is signed leaves scope and responsibilities undefined.',
   },
+  // Project Management
+  {
+    id: 'pjm-001', division: 'pjm', section: 'Contracts', type: 'single',
+    prompt: 'Which AIA document is the standard form of agreement between an owner and an architect?',
+    choices: ['A101', 'A201', 'B101', 'G702'], answer: [2],
+    explain: 'B101 is the owner-architect agreement. A101 is the owner-contractor agreement (stipulated sum), A201 holds the general conditions of the construction contract, and G702 is the contractor\'s application for payment.',
+  },
+  {
+    id: 'pjm-002', division: 'pjm', section: 'Contracts', type: 'single',
+    prompt: 'During construction, a change to the contract sum and time is agreed to and signed by the owner, architect and contractor. What is this document?',
+    choices: ['Construction Change Directive', 'Change Order', 'Architect\'s Supplemental Instructions', 'Addendum'], answer: [1],
+    explain: 'A Change Order is signed by all three and changes the work, sum or time. A Construction Change Directive is used when the contractor has not agreed yet; supplemental instructions cover minor changes with no change in sum or time; addenda change the bidding documents before a contract exists.',
+  },
+  {
+    id: 'pjm-003', division: 'pjm', section: 'Project Work Planning', type: 'single',
+    prompt: 'In the phases of basic services, which phase comes right after Schematic Design?',
+    choices: ['Construction Documents', 'Design Development', 'Bidding or Negotiation', 'Programming'], answer: [1],
+    explain: 'The usual order is Schematic Design, Design Development, Construction Documents, Procurement (bidding or negotiation), then Construction.',
+  },
+  {
+    id: 'pjm-004', division: 'pjm', section: 'Resource Management', type: 'single',
+    prompt: 'A project manager sees that the team has used 60% of the design fee while the work is about 40% complete. What should the project manager do first?',
+    choices: ['Stop all work until the owner pays more', 'Find out why the hours ran over and revise the work plan and staffing', 'Ask the team to stop recording their hours', 'Skip the quality control review to save time'], answer: [1],
+    explain: 'Comparing fee spent with work completed is how overruns are caught early. The first step is to understand the cause, then adjust staffing, scope or schedule, and talk with the principal and the owner if scope has grown.',
+  },
+  {
+    id: 'pjm-005', division: 'pjm', section: 'Project Quality Control', type: 'multi',
+    prompt: 'Which practices improve the quality of a drawing set before it is issued? Select all that apply.',
+    choices: ['A review by someone who did not draw the set', 'Checklists for each discipline\'s sheets', 'Coordinating the consultants\' drawings with the architectural drawings', 'Skipping the review when the deadline is tight'], answer: [0, 1, 2],
+    explain: 'Independent review, checklists and cross-discipline coordination catch conflicts before they reach the field. Skipping review under deadline pressure is where costly errors come from.',
+  },
+  {
+    id: 'pjm-006', division: 'pjm', section: 'Project Execution', type: 'single',
+    prompt: 'The architect hires a structural engineer as a consultant. Who is responsible for coordinating the engineer\'s work with the rest of the design?',
+    choices: ['The owner', 'The contractor', 'The architect', 'The building official'], answer: [2],
+    explain: 'Consultants hired by the architect work under the architect, who coordinates their services with the overall design and is responsible to the owner for them.',
+  },
+  {
+    id: 'pjm-007', division: 'pjm', section: 'Contracts', type: 'single',
+    prompt: 'Under the standard owner-architect agreement, who furnishes the survey of the site\'s boundaries, utilities and topography?',
+    choices: ['The owner', 'The architect', 'The contractor', 'The civil engineer, at the architect\'s cost'], answer: [0],
+    explain: 'B101 makes site information such as surveys and geotechnical reports the owner\'s responsibility. The architect is entitled to rely on that information.',
+  },
+  {
+    id: 'pjm-008', division: 'pjm', section: 'Project Quality Control', type: 'single',
+    prompt: 'What should the architect obtain before moving from Design Development into Construction Documents?',
+    choices: ['A building permit', 'The owner\'s approval of the Design Development documents', 'The contractor\'s schedule of values', 'A certificate of occupancy'], answer: [1],
+    explain: 'Each design phase ends with a submittal to the owner and the owner\'s approval, so later phases build on decisions the owner has accepted.',
+  },
+
+  // Programming & Analysis
+  {
+    id: 'pa-001', division: 'pa', section: 'Codes & Regulations', type: 'single',
+    prompt: 'Under the International Building Code, what is the occupancy group of a restaurant designed for 80 diners?',
+    choices: ['B (Business)', 'M (Mercantile)', 'A-2 (Assembly)', 'R-1 (Residential)'], answer: [2],
+    explain: 'Restaurants and other food and drink places with an occupant load of 50 or more are Assembly A-2. Smaller ones can be classified as Group B.',
+  },
+  {
+    id: 'pa-002', division: 'pa', section: 'Environmental & Contextual Conditions', type: 'single',
+    prompt: 'In the northern hemisphere, which way should most of the glass face for passive solar heating?',
+    choices: ['North', 'South', 'East', 'West'], answer: [1],
+    explain: 'South glass gets low winter sun deep into the building, and a roof overhang can shade the high summer sun.',
+  },
+  {
+    id: 'pa-003', division: 'pa', section: 'Site Analysis & Programming', type: 'single',
+    prompt: 'A 20,000 sq ft lot has a maximum floor area ratio (FAR) of 2.5. What is the most gross floor area that can be built?',
+    choices: ['8,000 sq ft', '22,500 sq ft', '40,000 sq ft', '50,000 sq ft'], answer: [3],
+    explain: 'FAR is gross floor area divided by lot area, so the maximum is 20,000 × 2.5 = 50,000 sq ft, spread over any number of floors that zoning allows.',
+  },
+  {
+    id: 'pa-004', division: 'pa', section: 'Building Analysis & Programming', type: 'single',
+    prompt: 'A program needs 30,000 net sq ft of usable space, and the building type is about 75% efficient. About how big will the building be?',
+    choices: ['22,500 gross sq ft', '30,000 gross sq ft', '37,500 gross sq ft', '40,000 gross sq ft'], answer: [3],
+    explain: 'Gross area = net area ÷ efficiency: 30,000 ÷ 0.75 = 40,000 sq ft. The extra covers walls, corridors, stairs, shafts and mechanical rooms.',
+  },
+  {
+    id: 'pa-005', division: 'pa', section: 'Environmental & Contextual Conditions', type: 'multi',
+    prompt: 'Which choices reduce the urban heat island effect around a new building? Select all that apply.',
+    choices: ['Roofing with high solar reflectance', 'A vegetated (green) roof', 'Shade trees over the parking lot', 'A large dark asphalt plaza'], answer: [0, 1, 2],
+    explain: 'Reflective and vegetated roofs and shade keep surfaces cooler. Dark paving absorbs sunlight and releases heat, which makes the heat island worse.',
+  },
+  {
+    id: 'pa-006', division: 'pa', section: 'Site Analysis & Programming', type: 'single',
+    prompt: 'The ground rises 5 feet over a horizontal distance of 100 feet. What is the slope?',
+    choices: ['0.5%', '5%', '20%', '50%'], answer: [1],
+    explain: 'Slope = rise ÷ run × 100: 5 ÷ 100 = 5%. Closely spaced contour lines mean steeper slopes.',
+  },
+  {
+    id: 'pa-007', division: 'pa', section: 'Codes & Regulations', type: 'single',
+    prompt: 'Under the 2010 ADA Standards, what is the steepest running slope allowed for a ramp?',
+    choices: ['1:8', '1:10', '1:12', '1:20'], answer: [2],
+    explain: 'Ramps can be no steeper than 1:12 (one inch of rise per foot of run). Walking surfaces steeper than 1:20 count as ramps.',
+  },
+  {
+    id: 'pa-008', division: 'pa', section: 'Building Analysis & Programming', type: 'single',
+    prompt: 'During programming, what is a bubble (adjacency) diagram mainly used for?',
+    choices: ['Showing which spaces need to be next to or near each other', 'Calculating structural loads', 'Choosing interior finishes', 'Estimating construction cost'], answer: [0],
+    explain: 'Bubble and adjacency diagrams map relationships between spaces before any plan is drawn, so the layout follows how people actually use the building.',
+  },
 ];
 
 export function questionsFor(division) {
