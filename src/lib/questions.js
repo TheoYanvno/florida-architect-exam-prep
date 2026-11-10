@@ -150,6 +150,81 @@ export const QUESTIONS = [
     choices: ['Showing which spaces need to be next to or near each other', 'Calculating structural loads', 'Choosing interior finishes', 'Estimating construction cost'], answer: [0],
     explain: 'Bubble and adjacency diagrams map relationships between spaces before any plan is drawn, so the layout follows how people actually use the building.',
   },
+  // Project Planning & Design
+  {
+    id: 'ppd-001', division: 'ppd', section: 'Building Systems, Materials, & Assemblies', type: 'single',
+    prompt: 'Which HVAC system moves refrigerant to indoor units so some zones can heat while others cool at the same time?',
+    choices: ['Constant-volume single-zone system', 'Variable refrigerant flow (VRF) with heat recovery', 'Window air conditioners', 'Gravity warm-air furnace'], answer: [1],
+    explain: 'A heat-recovery VRF system shifts heat between zones through the refrigerant piping, so one space can be cooled while another is heated.',
+  },
+  {
+    id: 'ppd-002', division: 'ppd', section: 'Project Costs & Budgeting', type: 'single',
+    prompt: 'Early in schematic design, which estimating method is most practical?',
+    choices: ['A detailed quantity takeoff of every material', 'A cost per square foot based on similar buildings', 'Contractor bids', 'The schedule of values'], answer: [1],
+    explain: 'With little detail drawn, estimates use area-based costs from comparable projects. Takeoffs and unit prices become possible as the documents develop.',
+  },
+  {
+    id: 'ppd-003', division: 'ppd', section: 'Codes & Regulations', type: 'single',
+    prompt: 'Under the IBC, which construction type allows the structure to be built of combustible materials such as wood framing throughout?',
+    choices: ['Type I', 'Type II', 'Type III', 'Type V'], answer: [3],
+    explain: 'Type V lets structural elements, exterior walls and interior walls be of any material the code permits, including wood. Types I and II are noncombustible; Type III has noncombustible exterior walls.',
+  },
+  {
+    id: 'ppd-004', division: 'ppd', section: 'Project Integration of Program & Systems', type: 'multi',
+    prompt: 'For an office in a hot, humid climate like Central Florida, which choices reduce the cooling load? Select all that apply.',
+    choices: ['Exterior shading on east and west windows', 'Glazing with a low solar heat gain coefficient (SHGC)', 'A roof with high solar reflectance', 'Large unshaded west-facing windows'], answer: [0, 1, 2],
+    explain: 'Shading, low-SHGC glass and reflective roofs keep solar heat out. Unshaded west glass takes in strong afternoon sun and raises cooling loads.',
+  },
+  {
+    id: 'ppd-005', division: 'ppd', section: 'Environmental Conditions & Context', type: 'single',
+    prompt: 'What does a light shelf do?',
+    choices: ['Stores backup lighting fixtures', 'Bounces daylight off its top onto the ceiling and deeper into the room while shading the window below', 'Blocks all daylight to reduce glare', 'Supports a skylight'], answer: [1],
+    explain: 'A light shelf reflects daylight up onto the ceiling, spreading it further into the space, and shades the lower view glass from direct sun.',
+  },
+  {
+    id: 'ppd-006', division: 'ppd', section: 'Building Systems, Materials, & Assemblies', type: 'single',
+    prompt: 'A school gym needs a column-free roof spanning about 120 feet. Which structural system suits it best?',
+    choices: ['Wood light-frame joists', 'A concrete flat plate slab', 'Long-span steel trusses or a space frame', 'Short-span masonry bearing walls with lintels'], answer: [2],
+    explain: 'Long-span steel trusses and space frames carry roofs over wide column-free spaces efficiently. The other systems suit much shorter spans.',
+  },
+
+  // Project Development & Documentation
+  {
+    id: 'pdd-001', division: 'pdd', section: 'Project Manual & Specifications', type: 'single',
+    prompt: 'In CSI MasterFormat, which division covers concrete?',
+    choices: ['Division 01', 'Division 03', 'Division 05', 'Division 09'], answer: [1],
+    explain: 'Division 03 is Concrete. Division 01 is General Requirements, 05 is Metals and 09 is Finishes.',
+  },
+  {
+    id: 'pdd-002', division: 'pdd', section: 'Project Manual & Specifications', type: 'single',
+    prompt: 'Which kind of specification states the results the work must achieve and leaves the method to the contractor?',
+    choices: ['Proprietary', 'Descriptive', 'Performance', 'Reference standard'], answer: [2],
+    explain: 'A performance spec describes required results and how they will be verified. Descriptive specs spell out materials and methods; proprietary specs name products.',
+  },
+  {
+    id: 'pdd-003', division: 'pdd', section: 'Construction Documentation', type: 'single',
+    prompt: 'According to AIA A201, how are the drawings and specifications meant to work together?',
+    choices: ['The drawings always govern over the specifications', 'They are complementary: what one requires is as binding as if all required it', 'The specifications always govern over the drawings', 'Only the document signed last applies'], answer: [1],
+    explain: 'A201 says the contract documents are complementary. That\'s why coordinating drawings and specs matters: the contractor is bound by both.',
+  },
+  {
+    id: 'pdd-004', division: 'pdd', section: 'Integration of Building Materials & Systems', type: 'single',
+    prompt: 'In a hot, humid climate with air-conditioned interiors, where does a vapor retarder generally belong in an exterior wall?',
+    choices: ['On the interior face, under the drywall', 'Toward the exterior side of the wall', 'In both faces of the wall', 'Vapor retarders are never used in walls'], answer: [1],
+    explain: 'Moisture moves from warm, humid outdoor air toward the cool interior, so the retarder goes toward the exterior. An interior plastic sheet can trap moisture inside the wall.',
+  },
+  {
+    id: 'pdd-005', division: 'pdd', section: 'Codes & Regulations', type: 'single',
+    prompt: 'Under the IBC, when must an egress door swing in the direction of exit travel?',
+    choices: ['Always', 'When it serves a room with an occupant load of 50 or more', 'Only in residential buildings', 'Never; doors may swing either way'], answer: [1],
+    explain: 'Side-hinged egress doors must swing in the direction of travel when serving an occupant load of 50 or more, and in high-hazard areas, so a crowd doesn\'t push against the door.',
+  },
+  {
+    id: 'pdd-006', division: 'pdd', section: 'Construction Cost Estimates', type: 'single',
+    prompt: 'Near the end of construction documents, which estimate is the most detailed and accurate?',
+    choices: ['Cost per square foot', 'Cost per bed or per seat', 'A quantity takeoff priced with unit costs', 'A percentage of last year\'s project'], answer: [2],
+    explain: 'With complete documents, an estimator can count quantities of each material and price them, which gives the most reliable figure before bids.',
+  },
 ];
 
 export function questionsFor(division) {
