@@ -1,10 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import { DIVISIONS } from '../lib/are.js';
-import { questionsFor, isCorrect, score, shuffled } from '../lib/questions.js';
+import { questionsFor, isCorrect, score, shuffled, mixedSet } from '../lib/questions.js';
 import { loadBest, recordBest, saveBest } from '../lib/scores.js';
 
 // Practice: pick a division, answer its questions one at a time (with an optional timer at the ARE's
 // pace), check each answer with its explanation, then see the score by NCARB section.
+// A mixed test runs at the average pace of all six divisions.
+const MIXED = {
+  id: 'mixed', code: 'Mixed', name: 'All divisions',
+  items: DIVISIONS.reduce((n, d) => n + d.items, 0),
+  testMinutes: DIVISIONS.reduce((n, d) => n + d.testMinutes, 0),
+};
+
 export default function Practice() {
   const available = DIVISIONS.filter(d => questionsFor(d.id).length > 0);
   const [division, setDivision] = useState(available[0]?.id || '');
@@ -20,7 +27,7 @@ export default function Practice() {
 
   if (session) return <Session {...session} onFinish={finish} onDone={() => setSession(null)} />;
 
-  const d = DIVISIONS.find(x => x.id === division);
+  const d = division === 'mixed' ? MIXED : DIVISIONS.find(x => x.id === division);
   return (
     <section>
       <h2>Practice questions</h2>
@@ -28,13 +35,14 @@ export default function Practice() {
       <div className="row">
         <label>Division
           <select value={division} onChange={e => setDivision(e.target.value)}>
+            <option value="mixed">Mixed · 20 questions from every division{best.mixed ? ` · best ${best.mixed.percent}%` : ''}</option>
             {DIVISIONS.map(x => <option key={x.id} value={x.id} disabled={!questionsFor(x.id).length}>{x.code} · {x.name} ({questionsFor(x.id).length}){best[x.id] ? ` · best ${best[x.id].percent}%` : ''}</option>)}
           </select>
         </label>
         <label className="check"><input type="checkbox" checked={timed} onChange={e => setTimed(e.target.checked)} /> Timed at the exam's pace</label>
       </div>
-      {d && timed && <p className="muted">At {d.items} items in {d.testMinutes} minutes, that's about {Math.round((d.testMinutes * 60) / d.items)} seconds a question.</p>}
-      <button className="primary" disabled={!d} onClick={() => setSession({ division: d, questions: shuffled(questionsFor(d.id)), timed })}>Start</button>
+      {d && timed && <p className="muted">{d.id === 'mixed' ? 'At the average pace of all six divisions' : `At ${d.items} items in ${d.testMinutes} minutes`}, that's about {Math.round((d.testMinutes * 60) / d.items)} seconds a question.</p>}
+      <button className="primary" disabled={!d} onClick={() => setSession({ division: d, questions: d.id === 'mixed' ? mixedSet(20) : shuffled(questionsFor(d.id)), timed })}>Start</button>
     </section>
   );
 }
@@ -64,7 +72,7 @@ function Session({ division, questions, timed, onDone, onFinish }) {
         {left === 0 && <p className="muted">Time ran out; unanswered questions count as wrong.</p>}
         <table>
           <thead><tr><th>Section</th><th>Correct</th></tr></thead>
-          <tbody>{Object.entries(result.bySection).map(([name, s]) => <tr key={name}><td>{name}</td><td>{s.correct} / {s.total}</td></tr>)}</tbody>
+          <tbody>{Object.entries(result.bySection).sort(([a], [b]) => a.localeCompare(b)).map(([name, s]) => <tr key={name}><td>{name}</td><td>{s.correct} / {s.total}</td></tr>)}</tbody>
         </table>
         <button className="primary" onClick={onDone}>Done</button>
       </section>

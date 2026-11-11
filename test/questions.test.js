@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { QUESTIONS, questionsFor, isCorrect, score, shuffled } from '../src/lib/questions.js';
+import { QUESTIONS, questionsFor, isCorrect, score, shuffled, mixedSet } from '../src/lib/questions.js';
 import { DIVISIONS } from '../src/lib/are.js';
 
 test('every question is well formed and tied to a real NCARB section', () => {
@@ -39,4 +39,14 @@ test('shuffling with a seed is repeatable and keeps every item', () => {
   const a = shuffled(QUESTIONS, 42).map(q => q.id);
   assert.deepEqual(shuffled(QUESTIONS, 42).map(q => q.id), a);
   assert.deepEqual([...a].sort(), QUESTIONS.map(q => q.id).sort());
+});
+
+test('a mixed test draws from several divisions and labels sections by division', () => {
+  const set = mixedSet(20, 5);
+  assert.equal(set.length, 20);
+  assert.ok(new Set(set.map(q => q.division)).size >= 4);
+  assert.ok(set.every(q => /^(PcM|PjM|PA|PPD|PDD|CE) · /.test(q.section)));
+  assert.equal(new Set(set.map(q => q.id)).size, 20);
+  const r = score(set, Object.fromEntries(set.map(q => [q.id, q.answer])));
+  assert.equal(r.percent, 100);
 });

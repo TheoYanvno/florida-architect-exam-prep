@@ -312,3 +312,10 @@ export function shuffled(list, seed = Date.now()) {
   }
   return out;
 }
+
+// A mixed practice test: up to n questions drawn from every division, shuffled, with each section
+// labeled by its division (several divisions have a "Codes & Regulations" section).
+export function mixedSet(n = 20, seed = Date.now()) {
+  const codes = { pcm: 'PcM', pjm: 'PjM', pa: 'PA', ppd: 'PPD', pdd: 'PDD', ce: 'CE' };
+  return shuffled(QUESTIONS, seed).slice(0, n).map(q => ({ ...q, section: `${codes[q.division]} · ${q.section}` }));
+}
