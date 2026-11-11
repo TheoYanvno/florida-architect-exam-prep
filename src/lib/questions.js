@@ -188,6 +188,19 @@ export const QUESTIONS = [
     explain: 'Long-span steel trusses and space frames carry roofs over wide column-free spaces efficiently. The other systems suit much shorter spans.',
   },
 
+  {
+    id: 'ppd-007', division: 'ppd', section: 'Project Costs & Budgeting', type: 'single',
+    prompt: 'An owner is choosing between two roofing systems. Which analysis compares them by the total cost of owning each one over the life of the building?',
+    choices: ['Value engineering by first cost only', 'Life-cycle cost analysis', 'A square-foot estimate', 'A schedule of values'], answer: [1],
+    explain: 'Life-cycle cost analysis adds the initial cost to operating, maintenance and replacement costs over the study period, often in present-value terms, so a cheaper system that wears out early can lose to a costlier, longer-lasting one.',
+  },
+  {
+    id: 'ppd-008', division: 'ppd', section: 'Environmental Conditions & Context', type: 'single',
+    prompt: 'In a hot, humid climate, which building form best supports natural cross ventilation?',
+    choices: ['A deep, square floor plate with windows on one side', 'A narrow floor plate with operable windows on opposite walls facing the prevailing breeze', 'A sealed glass box', 'Heavy masonry walls with small, high windows only'], answer: [1],
+    explain: 'Cross ventilation needs air to move through the space: a narrow plan with openings on opposite sides, oriented to the prevailing breeze, lets air flow through instead of stalling in a deep plan.',
+  },
+
   // Project Development & Documentation
   {
     id: 'pdd-001', division: 'pdd', section: 'Project Manual & Specifications', type: 'single',
@@ -225,6 +238,19 @@ export const QUESTIONS = [
     choices: ['Cost per square foot', 'Cost per bed or per seat', 'A quantity takeoff priced with unit costs', 'A percentage of last year\'s project'], answer: [2],
     explain: 'With complete documents, an estimator can count quantities of each material and price them, which gives the most reliable figure before bids.',
   },
+  {
+    id: 'pdd-007', division: 'pdd', section: 'Construction Documentation', type: 'single',
+    prompt: 'Which drawing best shows how the layers of an exterior wall stack up from the foundation to the roof?',
+    choices: ['Floor plan', 'Building elevation', 'Wall section', 'Reflected ceiling plan'], answer: [2],
+    explain: 'A wall section cuts vertically through the wall to show its assembly and how it meets the foundation, floors and roof. Details at a larger scale then show specific connections.',
+  },
+  {
+    id: 'pdd-008', division: 'pdd', section: 'Project Manual & Specifications', type: 'single',
+    prompt: 'Where are the bidding requirements, contract forms, conditions of the contract and the specifications bound together?',
+    choices: ['The drawing set', 'The project manual', 'The owner-architect agreement', 'The submittal log'], answer: [1],
+    explain: 'The project manual collects the written documents: procurement and contracting requirements, the conditions of the contract and the technical specifications. The drawings are issued alongside it.',
+  },
+
   // Construction & Evaluation
   {
     id: 'ce-001', division: 'ce', section: 'Administrative Procedures & Protocols', type: 'single',
