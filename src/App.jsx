@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DIVISIONS, AXP_TOTAL_HOURS, SOURCES, formatMinutes, expectedItems } from './lib/are.js';
 import { FLORIDA_STEPS, UF } from './lib/florida.js';
 import { buildPlan, SUGGESTED_ORDER } from './lib/plan.js';
 import Practice from './components/Practice.jsx';
+import { loadBest } from './lib/scores.js';
+import { loadDates, saveDates } from './lib/dates.js';
 
 export default function App() {
   const [tab, setTab] = useState('divisions');
+  const [practiceDivision, setPracticeDivision] = useState(null);
+  const practice = id => { setPracticeDivision(id); setTab('practice'); };
   return (
     <>
       <header>
@@ -17,12 +21,18 @@ export default function App() {
           <button aria-pressed={tab === 'florida'} onClick={() => setTab('florida')}>Florida license</button>
         </nav>
       </header>
-      <main>{tab === 'divisions' ? <Divisions /> : tab === 'plan' ? <Plan /> : tab === 'practice' ? <Practice /> : <Florida />}</main>
+      <main>{tab === 'divisions' ? <Divisions onPractice={practice} /> : tab === 'plan' ? <Plan onPractice={practice} />
+        : tab === 'practice' ? <Practice key={practiceDivision || 'none'} initialDivision={practiceDivision} /> : <Florida />}</main>
     </>
   );
 }
 
-function Divisions() {
+function Best({ id }) {
+  const best = loadBest()[id];
+  return best ? <span className="best">Best practice score: {best.percent}%</span> : <span className="muted">Not practiced yet</span>;
+}
+
+function Divisions({ onPractice }) {
   return (
     <section>
       <h2>The six ARE 5.0 divisions</h2>
@@ -37,7 +47,11 @@ function Divisions() {
                 <li key={s.name}>{s.name}: {s.min}–{s.max}% <span className="muted">(about {expectedItems(d, s)} items)</span></li>
               ))}
             </ul>
-            <a href={SOURCES[d.source]} target="_blank" rel="noreferrer">NCARB source</a>
+            <div className="row">
+              <Best id={d.id} />
+              <button onClick={() => onPractice(d.id)}>Practice {d.code}</button>
+              <a href={SOURCES[d.source]} target="_blank" rel="noreferrer">NCARB source</a>
+            </div>
           </article>
         ))}
       </div>
@@ -62,10 +76,12 @@ function Florida() {
   );
 }
 
-function Plan() {
-  const today = new Date().toISOString().slice(0, 10);
-  const [start, setStart] = useState(today);
-  const [goal, setGoal] = useState(new Date(Date.now() + 30 * 7 * 86400000).toISOString().slice(0, 10));
+function Plan({ onPractice }) {
+  const saved = loadDates();
+  const [start, setStart] = useState(saved.start);
+  const [goal, setGoal] = useState(saved.goal);
+  useEffect(() => { saveDates({ start, goal }); }, [start, goal]);
+  const best = loadBest();
   let plan = null, error = '';
   try { plan = buildPlan(start, goal, SUGGESTED_ORDER); } catch (e) { error = e.message; }
   return (
@@ -78,12 +94,13 @@ function Plan() {
       </div>
       {error ? <p role="alert">{error}</p> : (
         <table>
-          <thead><tr><th>Division</th><th>Weeks</th><th>Study from</th><th>Review week</th><th>Take the exam by</th></tr></thead>
+          <thead><tr><th>Division</th><th>Weeks</th><th>Study from</th><th>Review week</th><th>Take the exam by</th><th>Practice</th></tr></thead>
           <tbody>{plan.map(b => (
-            <tr key={b.id}><td>{b.code} · {b.name}</td><td>{b.weeks}</td><td>{b.studyFrom}</td><td>{b.reviewFrom}</td><td>{b.examBy}</td></tr>
+            <tr key={b.id}><td>{b.code} · {b.name}</td><td>{b.weeks}</td><td>{b.studyFrom}</td><td>{b.reviewFrom}</td><td>{b.examBy}</td><td>{best[b.id] ? `${best[b.id].percent}% best` : ''} <button onClick={() => onPractice(b.id)}>Practice</button></td></tr>
           ))}</tbody>
         </table>
       )}
+      <p className="muted small">Your dates are saved in this browser.</p>
     </section>
   );
 }

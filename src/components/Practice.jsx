@@ -12,9 +12,9 @@ const MIXED = {
   testMinutes: DIVISIONS.reduce((n, d) => n + d.testMinutes, 0),
 };
 
-export default function Practice() {
+export default function Practice({ initialDivision }) {
   const available = DIVISIONS.filter(d => questionsFor(d.id).length > 0);
-  const [division, setDivision] = useState(available[0]?.id || '');
+  const [division, setDivision] = useState(initialDivision && available.some(d => d.id === initialDivision) ? initialDivision : available[0]?.id || '');
   const [timed, setTimed] = useState(false);
   const [session, setSession] = useState(null);
   const [best, setBest] = useState(loadBest);

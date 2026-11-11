@@ -30,3 +30,4 @@ label { display:flex; flex-direction:column; gap:4px; } label.check { flex-direc
 .feedback { padding:12px; border-radius:10px; border:1px solid var(--line); display:flex; flex-direction:column; gap:10px; } .feedback.ok { border-color:var(--good); } .feedback.bad { border-color:var(--bad); }
 .error { color:var(--bad); }
 p.ok { color: var(--good); font-weight: 600; }
+.best { color: var(--good); font-weight: 600; } .small { font-size: .85rem; }
