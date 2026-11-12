@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { DIVISIONS, AXP_TOTAL_HOURS, SOURCES, formatMinutes, expectedItems } from './lib/are.js';
 import { FLORIDA_STEPS, UF } from './lib/florida.js';
+import { UF_RESOURCES, UF_GROUPS } from './lib/uf.js';
 import { buildPlan, SUGGESTED_ORDER } from './lib/plan.js';
 import Practice from './components/Practice.jsx';
 import Flashcards from './components/Flashcards.jsx';
@@ -21,10 +22,12 @@ export default function App() {
           <button aria-pressed={tab === 'practice'} onClick={() => setTab('practice')}>Practice</button>
           <button aria-pressed={tab === 'cards'} onClick={() => setTab('cards')}>Flashcards</button>
           <button aria-pressed={tab === 'florida'} onClick={() => setTab('florida')}>Florida license</button>
+          <button aria-pressed={tab === 'uf'} onClick={() => setTab('uf')}>At UF</button>
         </nav>
       </header>
       <main>{tab === 'divisions' ? <Divisions onPractice={practice} /> : tab === 'plan' ? <Plan onPractice={practice} />
-        : tab === 'practice' ? <Practice key={practiceDivision || 'none'} initialDivision={practiceDivision} /> : tab === 'cards' ? <Flashcards /> : <Florida />}</main>
+        : tab === 'practice' ? <Practice key={practiceDivision || 'none'} initialDivision={practiceDivision} /> : tab === 'cards' ? <Flashcards /> : tab === 'uf' ? <AtUF /> : <Florida />}</main>
+      <footer><p>For University of Florida architecture students working toward a Florida license. An independent study tool, not affiliated with or endorsed by the University of Florida, NCARB or the Florida DBPR; the orange and blue are a nod to Gainesville.</p></footer>
     </>
   );
 }
@@ -58,6 +61,30 @@ function Divisions({ onPractice }) {
         ))}
       </div>
       <p className="muted">AXP total: {AXP_TOTAL_HOURS.toLocaleString()} hours (<a href={SOURCES.ncarbAXP} target="_blank" rel="noreferrer">NCARB</a>).</p>
+    </section>
+  );
+}
+
+function AtUF() {
+  return (
+    <section>
+      <h2>Resources at the University of Florida</h2>
+      <p className="muted">Help on and near campus for getting through the ARE and AXP while you're at UF. Each one links to its own page.</p>
+      {UF_GROUPS.map(g => (
+        <div key={g}>
+          <h3 className="group">{g}</h3>
+          <div className="grid uf-grid">
+            {UF_RESOURCES.filter(r => r.group === g).map(r => (
+              <article key={r.id} className="panel uf">
+                <h3>{r.title}</h3>
+                <p>{r.detail}</p>
+                <p className="muted small">{r.where}</p>
+                <a href={r.url} target="_blank" rel="noreferrer">Visit their page ↗</a>
+              </article>
+            ))}
+          </div>
+        </div>
+      ))}
     </section>
   );
 }
