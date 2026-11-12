@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { QUESTIONS, questionsFor, isCorrect, score, shuffled, mixedSet } from '../src/lib/questions.js';
+import { QUESTIONS, questionsFor, isCorrect, score, shuffled, mixedSet, shuffleChoices, dealChoices } from '../src/lib/questions.js';
 import { DIVISIONS } from '../src/lib/are.js';
 
 test('every question is well formed and tied to a real NCARB section', () => {
@@ -49,4 +49,16 @@ test('a mixed test draws from several divisions and labels sections by division'
   assert.equal(new Set(set.map(q => q.id)).size, 20);
   const r = score(set, Object.fromEntries(set.map(q => [q.id, q.answer])));
   assert.equal(r.percent, 100);
+});
+
+test('choices are dealt in a new order with the answer moved along, so its spot is no clue', () => {
+  for (const q of QUESTIONS) {
+    const d = shuffleChoices(q, 5);
+    assert.deepEqual([...d.choices].sort(), [...q.choices].sort(), q.id);
+    assert.deepEqual(d.answer.map(i => d.choices[i]).sort(), q.answer.map(i => q.choices[i]).sort(), q.id);
+  }
+  const spots = [0, 0, 0, 0];
+  for (const q of dealChoices(QUESTIONS.filter(x => x.type === 'single'), 11)) spots[q.answer[0]]++;
+  assert.ok(Math.max(...spots) < 20, `answers bunch up: ${spots}`);
+  assert.deepEqual(dealChoices(QUESTIONS, 3), dealChoices(QUESTIONS, 3));
 });

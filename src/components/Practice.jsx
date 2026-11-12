@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { DIVISIONS } from '../lib/are.js';
-import { questionsFor, isCorrect, score, shuffled, mixedSet } from '../lib/questions.js';
+import { questionsFor, isCorrect, score, shuffled, mixedSet, dealChoices } from '../lib/questions.js';
 import { loadMissed, saveMissed, updateMissed, missedSet } from '../lib/missed.js';
 import { loadBest, recordBest, saveBest } from '../lib/scores.js';
 
@@ -49,7 +49,7 @@ export default function Practice({ initialDivision }) {
         <label className="check"><input type="checkbox" checked={timed} onChange={e => setTimed(e.target.checked)} /> Timed at the exam's pace</label>
       </div>
       {d && timed && <p className="muted">{d.id === 'mixed' || d.id === 'missed' ? 'At the average pace of all six divisions' : `At ${d.items} items in ${d.testMinutes} minutes`}, that's about {Math.round((d.testMinutes * 60) / d.items)} seconds a question.</p>}
-      <button className="primary" disabled={!d} onClick={() => setSession({ division: d, questions: d.id === 'mixed' ? mixedSet(20) : d.id === 'missed' ? missedSet(missed) : shuffled(questionsFor(d.id)), timed })}>Start</button>
+      <button className="primary" disabled={!d} onClick={() => setSession({ division: d, questions: dealChoices(d.id === 'mixed' ? mixedSet(20) : d.id === 'missed' ? missedSet(missed) : shuffled(questionsFor(d.id))), timed })}>Start</button>
     </section>
   );
 }

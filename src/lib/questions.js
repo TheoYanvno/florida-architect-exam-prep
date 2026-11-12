@@ -349,3 +349,14 @@ export function withDivisionLabel(q) {
 export function mixedSet(n = 20, seed = Date.now()) {
   return shuffled(QUESTIONS, seed).slice(0, n).map(withDivisionLabel);
 }
+
+// The same question with its choices in a new order (and its answer moved with them), so where the right
+// answer sits is never a clue. Each practice session deals the choices again.
+export function shuffleChoices(q, seed = Date.now()) {
+  const order = shuffled(q.choices.map((_, i) => i), seed);
+  return { ...q, choices: order.map(i => q.choices[i]), answer: q.answer.map(a => order.indexOf(a)).sort((x, y) => x - y) };
+}
+
+export function dealChoices(questions, seed = Date.now()) {
+  return questions.map((q, k) => shuffleChoices(q, seed + k * 7919));
+}
