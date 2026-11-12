@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { DIVISIONS } from '../lib/are.js';
 import { questionsFor, isCorrect, score, shuffled, mixedSet } from '../lib/questions.js';
+import { loadMissed, saveMissed, updateMissed, missedSet } from '../lib/missed.js';
 import { loadBest, recordBest, saveBest } from '../lib/scores.js';
 
 // Practice: pick a division, answer its questions one at a time (with an optional timer at the ARE's
@@ -11,6 +12,7 @@ const MIXED = {
   items: DIVISIONS.reduce((n, d) => n + d.items, 0),
   testMinutes: DIVISIONS.reduce((n, d) => n + d.testMinutes, 0),
 };
+const MISSED = { ...MIXED, id: 'missed', code: 'Missed', name: 'Questions you missed' };
 
 export default function Practice({ initialDivision }) {
   const available = DIVISIONS.filter(d => questionsFor(d.id).length > 0);
@@ -18,8 +20,12 @@ export default function Practice({ initialDivision }) {
   const [timed, setTimed] = useState(false);
   const [session, setSession] = useState(null);
   const [best, setBest] = useState(loadBest);
+  const [missed, setMissed] = useState(loadMissed);
 
-  function finish(division, result) {
+  function finish(division, result, questions, answers) {
+    const ids = updateMissed(missed, questions, answers);
+    setMissed(ids); saveMissed(ids);
+    if (division.id === 'missed') return false;          // reviewing misses doesn't set a best score
     const next = recordBest(best, division.id, result);
     if (next.isNew) { setBest(next.best); saveBest(next.best); }
     return next.isNew;
@@ -27,7 +33,7 @@ export default function Practice({ initialDivision }) {
 
   if (session) return <Session {...session} onFinish={finish} onDone={() => setSession(null)} />;
 
-  const d = division === 'mixed' ? MIXED : DIVISIONS.find(x => x.id === division);
+  const d = division === 'mixed' ? MIXED : division === 'missed' ? (missed.length ? MISSED : null) : DIVISIONS.find(x => x.id === division);
   return (
     <section>
       <h2>Practice questions</h2>
@@ -35,14 +41,15 @@ export default function Practice({ initialDivision }) {
       <div className="row">
         <label>Division
           <select value={division} onChange={e => setDivision(e.target.value)}>
+            <option value="missed" disabled={!missed.length}>Missed · {missed.length ? `${missed.length} question${missed.length === 1 ? '' : 's'} to try again` : 'none yet'}</option>
             <option value="mixed">Mixed · 20 questions from every division{best.mixed ? ` · best ${best.mixed.percent}%` : ''}</option>
             {DIVISIONS.map(x => <option key={x.id} value={x.id} disabled={!questionsFor(x.id).length}>{x.code} · {x.name} ({questionsFor(x.id).length}){best[x.id] ? ` · best ${best[x.id].percent}%` : ''}</option>)}
           </select>
         </label>
         <label className="check"><input type="checkbox" checked={timed} onChange={e => setTimed(e.target.checked)} /> Timed at the exam's pace</label>
       </div>
-      {d && timed && <p className="muted">{d.id === 'mixed' ? 'At the average pace of all six divisions' : `At ${d.items} items in ${d.testMinutes} minutes`}, that's about {Math.round((d.testMinutes * 60) / d.items)} seconds a question.</p>}
-      <button className="primary" disabled={!d} onClick={() => setSession({ division: d, questions: d.id === 'mixed' ? mixedSet(20) : shuffled(questionsFor(d.id)), timed })}>Start</button>
+      {d && timed && <p className="muted">{d.id === 'mixed' || d.id === 'missed' ? 'At the average pace of all six divisions' : `At ${d.items} items in ${d.testMinutes} minutes`}, that's about {Math.round((d.testMinutes * 60) / d.items)} seconds a question.</p>}
+      <button className="primary" disabled={!d} onClick={() => setSession({ division: d, questions: d.id === 'mixed' ? mixedSet(20) : d.id === 'missed' ? missedSet(missed) : shuffled(questionsFor(d.id)), timed })}>Start</button>
     </section>
   );
 }
@@ -63,7 +70,7 @@ function Session({ division, questions, timed, onDone, onFinish }) {
 
   const result = useMemo(() => (finished ? score(questions, answers) : null), [finished, questions, answers]);
   const [isNewBest, setIsNewBest] = useState(null);
-  useEffect(() => { if (result && isNewBest === null) setIsNewBest(onFinish(division, result)); }, [result]);
+  useEffect(() => { if (result && isNewBest === null) setIsNewBest(onFinish(division, result, questions, answers)); }, [result]);
   if (result) {
     return (
       <section aria-live="polite">
@@ -74,6 +81,7 @@ function Session({ division, questions, timed, onDone, onFinish }) {
           <thead><tr><th>Section</th><th>Correct</th></tr></thead>
           <tbody>{Object.entries(result.bySection).sort(([a], [b]) => a.localeCompare(b)).map(([name, s]) => <tr key={name}><td>{name}</td><td>{s.correct} / {s.total}</td></tr>)}</tbody>
         </table>
+        <Review questions={questions} answers={answers} />
         <button className="primary" onClick={onDone}>Done</button>
       </section>
     );
@@ -114,5 +122,31 @@ function Session({ division, questions, timed, onDone, onFinish }) {
         <button className="primary" disabled={!picked.length} onClick={() => setChecked(true)}>Check answer</button>
       )}
     </section>
+  );
+}
+
+// After a session: every question you missed, what you picked, the right answer and why. These are saved
+// to the Missed list so you can practice them again.
+function Review({ questions, answers }) {
+  const wrong = questions.filter(q => !isCorrect(q, answers[q.id] || []));
+  if (!wrong.length) return <p className="ok">You got every question right.</p>;
+  const letters = idx => idx.map(n => String.fromCharCode(65 + n)).join(', ');
+  return (
+    <div className="review">
+      <h3>Review what you missed ({wrong.length})</h3>
+      <p className="muted">These are saved to the Missed list in the division menu, so you can practice them again.</p>
+      <ol>
+        {wrong.map(q => {
+          const picked = answers[q.id] || [];
+          return (
+            <li key={q.id}>
+              <p><strong>{q.prompt}</strong> <span className="muted">({q.section})</span></p>
+              <p>Right answer: {letters(q.answer)}. {q.answer.map(n => q.choices[n]).join('; ')}</p>
+              <p className="muted">{picked.length ? `You picked ${letters([...picked].sort())}.` : 'Not answered.'} {q.explain}</p>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
   );
 }

@@ -341,7 +341,11 @@ export function shuffled(list, seed = Date.now()) {
 
 // A mixed practice test: up to n questions drawn from every division, shuffled, with each section
 // labeled by its division (several divisions have a "Codes & Regulations" section).
+const CODES = { pcm: 'PcM', pjm: 'PjM', pa: 'PA', ppd: 'PPD', pdd: 'PDD', ce: 'CE' };
+export function withDivisionLabel(q) {
+  return { ...q, section: `${CODES[q.division]} · ${q.section}` };
+}
+
 export function mixedSet(n = 20, seed = Date.now()) {
-  const codes = { pcm: 'PcM', pjm: 'PjM', pa: 'PA', ppd: 'PPD', pdd: 'PDD', ce: 'CE' };
-  return shuffled(QUESTIONS, seed).slice(0, n).map(q => ({ ...q, section: `${codes[q.division]} · ${q.section}` }));
+  return shuffled(QUESTIONS, seed).slice(0, n).map(withDivisionLabel);
 }
