@@ -7,7 +7,10 @@ A study web app for the Architect Registration Examination (ARE 5.0) and the pat
 - The six ARE 5.0 divisions with NCARB's item counts, test times and section weights
 - The AXP experience hours by area
 - A Florida licensing checklist from the Florida Board of Architecture and Interior Design
-- Coming next: a study plan, original practice questions and flashcards for each division, a timed practice mode and progress tracking
+- A study plan that spreads the six divisions between your start and goal dates, saved in the browser
+- 48 original practice questions (8 per division), one division at a time or a 20-question mixed test, with an optional timer at the exam's pace, explanations, a score by NCARB section and your best score saved
+- Answer choices shuffled every session, a review of every question you missed, and a Missed list to practice until you get them right
+- 36 flashcards of key terms (6 per division) with Got it and Again, saved in the browser
 
 Every fact links to its source (NCARB, the Florida DBPR board pages and the University of Florida School of Architecture). Practice questions are written for this app; nothing is copied from NCARB or prep companies.
 

@@ -3,6 +3,7 @@ import { DIVISIONS, AXP_TOTAL_HOURS, SOURCES, formatMinutes, expectedItems } fro
 import { FLORIDA_STEPS, UF } from './lib/florida.js';
 import { buildPlan, SUGGESTED_ORDER } from './lib/plan.js';
 import Practice from './components/Practice.jsx';
+import Flashcards from './components/Flashcards.jsx';
 import { loadBest } from './lib/scores.js';
 import { loadDates, saveDates } from './lib/dates.js';
 
@@ -18,11 +19,12 @@ export default function App() {
           <button aria-pressed={tab === 'divisions'} onClick={() => setTab('divisions')}>ARE divisions</button>
           <button aria-pressed={tab === 'plan'} onClick={() => setTab('plan')}>Study plan</button>
           <button aria-pressed={tab === 'practice'} onClick={() => setTab('practice')}>Practice</button>
+          <button aria-pressed={tab === 'cards'} onClick={() => setTab('cards')}>Flashcards</button>
           <button aria-pressed={tab === 'florida'} onClick={() => setTab('florida')}>Florida license</button>
         </nav>
       </header>
       <main>{tab === 'divisions' ? <Divisions onPractice={practice} /> : tab === 'plan' ? <Plan onPractice={practice} />
-        : tab === 'practice' ? <Practice key={practiceDivision || 'none'} initialDivision={practiceDivision} /> : <Florida />}</main>
+        : tab === 'practice' ? <Practice key={practiceDivision || 'none'} initialDivision={practiceDivision} /> : tab === 'cards' ? <Flashcards /> : <Florida />}</main>
     </>
   );
 }
