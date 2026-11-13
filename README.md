@@ -2,6 +2,18 @@
 
 A study web app for the Architect Registration Examination (ARE 5.0) and the path to an architect license in Florida, written for University of Florida architecture students and recent graduates who want to pass every division on the first try.
 
+**Live app:** https://theoyanvno.github.io/florida-architect-exam-prep/
+
+## Screenshots
+
+| ARE divisions | Study plan |
+|---|---|
+| ![The six ARE divisions with item counts, times and your best score](screenshots/divisions.png) | ![A study plan spread between start and goal dates](screenshots/plan.png) |
+| **Practice** | **Flashcards** |
+| ![A practice question with shuffled answer choices](screenshots/practice.png) | ![A flashcard of a key term](screenshots/flashcards.png) |
+| **At UF** | **On a phone** |
+| ![Campus resources at the University of Florida](screenshots/at-uf.png) | <img src="screenshots/phone.png" alt="The At UF page on a phone" width="260"> |
+
 ## What it covers
 
 - The six ARE 5.0 divisions with NCARB's item counts, test times and section weights
