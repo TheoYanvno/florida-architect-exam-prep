@@ -39,3 +39,18 @@ test('levels go Candidate, Course graduate, Exam ready', () => {
   const exams = { quiz: {}, exam: Object.fromEntries(['pcm', 'pjm', 'pa', 'ppd', 'pdd', 'ce'].map(id => [id, { percent: 70, timed: false }])) };
   assert.deepEqual(levels({ ...blank, lessons: all, path: exams }).map(l => l.earned), [true, true, true]);
 });
+
+test('streak badges run from 3 days to six months, and Halfway there needs 3 divisions', () => {
+  const days = Array.from({ length: 60 }, (_, i) => new Date(Date.UTC(2026, 8, 26 + i)).toISOString().slice(0, 10));
+  const a = achievements({ ...blank, days, today: days.at(-1) });
+  const streaks = a.milestones.filter(b => b.id.startsWith('streak-'));
+  assert.deepEqual(streaks.map(b => b.target), [3, 7, 14, 30, 60, 90, 120, 150, 180]);
+  assert.deepEqual(streaks.map(b => b.earned), [true, true, true, true, true, false, false, false, false]);
+
+  const ids = ['pa', 'ce', 'pcm'];
+  const lessons = Object.fromEntries(LESSONS.filter(l => ids.includes(l.division)).map(l => [l.id, PASS_MARK]));
+  const path = { quiz: Object.fromEntries(ids.map(id => [id, 80])), exam: Object.fromEntries(ids.map(id => [id, { percent: 75, timed: false }])) };
+  const half = s => achievements(s).milestones.find(b => b.id === 'halfway');
+  assert.equal(half({ ...blank, lessons, path }).earned, true);
+  assert.deepEqual([half({ ...blank, lessons }).have, half(blank).have], [0, 0]);
+});

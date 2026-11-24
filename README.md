@@ -4,13 +4,13 @@ A study app for the architect registration exam (ARE® 5.0) and the path to an a
 
 **Live app:** [theoyanvno.github.io/florida-architect-exam-prep](https://theoyanvno.github.io/florida-architect-exam-prep/)
 
-**Status:** finished. Each of the six divisions is a full path of lessons, a quiz and a practice exam, with 216 questions, 300 flashcards and 23 achievement badges, and it installs on iPhone and Android.
+**Status:** finished. Each of the six divisions is a full path of lessons, a quiz and a practice exam, with 216 questions, 300 flashcards and 30 achievements, and it installs on iPhone and Android.
 
 ## Screenshots
 
 | Home | Course | Lesson |
 |---|---|---|
-| <img src="screenshots/home.png" alt="Home: overall progress ring, days to goal, your level, points and streak, and the six divisions" width="240"> | <img src="screenshots/course.png" alt="A division's path: lessons, then the division quiz, then the practice exam" width="240"> | <img src="screenshots/lesson.png" alt="A lesson with a worked example" width="240"> |
+| <img src="screenshots/home.png" alt="Home: overall progress ring, days to goal, your level, points and streak, and a course card for each division" width="240"> | <img src="screenshots/course.png" alt="A division's path: lessons, then the division quiz, then the practice exam" width="240"> | <img src="screenshots/lesson.png" alt="A lesson with a worked example" width="240"> |
 | **Practice exam** | **Achievements** | **Study plan** |
 | <img src="screenshots/exam.png" alt="A timed practice exam with a question palette and flags" width="240"> | <img src="screenshots/achievements.png" alt="Division badges, one earned and the rest showing progress" width="240"> | <img src="screenshots/plan.png" alt="A study plan spread between start and goal dates" width="240"> |
 | **Practice** | | |
@@ -34,13 +34,13 @@ Like CodeForge, each division is a path in three steps:
 2. **Division quiz.** Unlocks when every lesson is finished: 10 questions on what the lessons taught, with the answer and explanation after each one. Pass with 75%.
 3. **Practice exam.** Unlocks when the quiz is passed: every question for the division, including 10 you won't have seen in a lesson or quiz. As on the real exam, you don't see answers until you submit, and you can flag questions and jump between them. The timer keeps the real division's pace. Pass with 70%; results are broken down by NCARB section.
 
-Pass all three to earn the division's badge. **Achievements** award points (20 per lesson, 50 per quiz, 100 per exam, 2 per flashcard). There are three levels (Candidate, Course graduate, Exam ready), a badge for each division and 14 milestones such as Perfect quiz, Beat the clock and a 7-day streak. Free practice and flashcards stay open at any time.
+Pass all three to earn the division's badge. **Achievements** award points (20 per lesson, 50 per quiz, 100 per exam, 2 per flashcard). There are three levels (Candidate, Course graduate, Exam ready), a badge for each division and 21 milestones, among them Perfect quiz, Beat the clock, Halfway there (3 divisions finished) and streaks from 3 days up to six months. Free practice and flashcards stay open at any time.
 
 ## What it covers
 
 - **A full course:** 27 lessons, one for each NCARB content section of the six divisions (about 5½ hours of reading). Each lesson teaches the material in plain words, works examples where numbers matter (fees, earned value, FAR, exit separation, stairs, payment applications), sums up what to remember, and ends with a four-question check; 75% finishes the lesson
 - Readiness for each division counts lessons finished (40%) and your best practice or exam score (60%)
-- A home screen with your overall progress, days to your goal date, divisions left and your practice average, a card for each division with your readiness, and the study tools
+- A home screen with your overall progress, days to your goal date, divisions left and your practice average, your level and streak, a course card for each division showing your next step, and the study tools (exam divisions, flashcards and resources)
 - A Progress page to mark divisions passed, and a Profile page for your name, your dates and installing on iPhone
 - The six ARE 5.0 divisions with NCARB's item counts, test times and section weights
 - The AXP experience hours by area

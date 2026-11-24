@@ -8,6 +8,13 @@ import { quizPassed, examPassed, lessonsDone, steps, streak, bestStreak, QUIZ_PA
 
 export const POINTS = { lesson: 20, quiz: 50, exam: 100, card: 2 };
 
+// Streak badges, from three days to six months (a month counted as 30 days).
+export const STREAKS = [
+  [3, '🔥', '3-day streak'], [7, '📅', 'Week streak'], [14, '🗓️', 'Two-week streak'],
+  [30, '🌙', 'Month streak'], [60, '🌗', 'Two-month streak'], [90, '🌕', 'Three-month streak'],
+  [120, '⭐', 'Four-month streak'], [150, '🌟', 'Five-month streak'], [180, '🏆', 'Six-month streak'],
+];
+
 /**
  * state = { lessons: { [lessonId]: best% }, path: { quiz, exam }, known: [cardIds], best: { [id]: { percent } },
  *           passed: [division ids], days: ['YYYY-MM-DD'], today: 'YYYY-MM-DD' }
@@ -63,9 +70,8 @@ export function milestoneBadges({ lessons, path, known, best, passed, days, toda
     { id: 'mixed', icon: '🔀', name: 'All-rounder', desc: 'Score 80% or better on a 20-question mixed test.', ...yes((best.mixed?.percent ?? 0) >= 80) },
     { id: 'cards-100', icon: '🗂️', name: 'Term collector', desc: 'Mark 100 flashcards "Got it".', ...count(known.length, 100) },
     { id: 'cards-all', icon: '🧠', name: 'Every term', desc: `Mark all ${CARDS.length} flashcards "Got it".`, ...count(known.length, CARDS.length) },
-    { id: 'streak-3', icon: '🔥', name: '3-day streak', desc: 'Study 3 days in a row.', ...count(run, 3) },
-    { id: 'streak-7', icon: '📅', name: 'Week streak', desc: 'Study 7 days in a row.', ...count(run, 7) },
-    { id: 'streak-30', icon: '🏆', name: 'Month streak', desc: 'Study 30 days in a row.', ...count(run, 30) },
+    { id: 'halfway', icon: '⛰️', name: 'Halfway there', desc: 'Finish 3 of the 6 divisions: every lesson, the quiz and the practice exam.', ...count(DIVISIONS.filter(d => lessonsDone(d.id, lessons) && quizPassed(d.id, path) && examPassed(d.id, path)).length, 3) },
+    ...STREAKS.map(([days, icon, name]) => ({ id: `streak-${days}`, icon, name, desc: `Study ${days} days in a row.`, ...count(run, days) })),
     { id: 'passed-1', icon: '✅', name: 'First division passed', desc: 'Mark a real ARE division passed on the Progress page.', ...count(passed.length, 1) },
     { id: 'passed-6', icon: '🎉', name: 'All six passed', desc: 'Mark all six ARE divisions passed.', ...count(passed.length, DIVISIONS.length) },
   ].map(b => ({ ...b, earned: b.have >= b.target }));

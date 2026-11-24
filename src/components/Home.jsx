@@ -3,6 +3,7 @@ import { loadDates } from '../lib/dates.js';
 import { loadPassed, loadName, summary, greeting } from '../lib/progress.js';
 import { loadLessons } from '../lib/course/index.js';
 import { LevelCard } from './Achievements.jsx';
+import { loadPath, steps, stage } from '../lib/path.js';
 
 // Line icons for the six divisions, drawn for this app.
 const DIV_ICONS = {
@@ -18,14 +19,10 @@ export const DivisionIcon = ({ id, size = 34 }) => (
 );
 
 const TOOLS = [
-  ['#learn', 'Course', 'Lessons, a quiz and a practice exam for each division',
-    <path d="M12 4 2.5 8.5 12 13l9.5-4.5zM6 10.5v4.5c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5M21.5 8.5V14" />],
-  ['#practice', 'Practice Questions', 'Exam-style questions with explanations',
-    <><rect x="5" y="4.5" width="14" height="16" rx="2" /><path d="M9 4.5V3h6v1.5M8 10l1.2 1.2L11.5 9M13 10.5h3M8 15l1.2 1.2L11.5 14M13 15.5h3" /></>],
+  ['#divisions', 'Exam Divisions', 'The six divisions: items, test times and section weights',
+    <path d="m12 4 9 4.5-9 4.5-9-4.5zM3 12.5l9 4.5 9-4.5M3 16.5l9 4.5 9-4.5" />],
   ['#cards', 'Flashcards', 'Key terms, codes and concepts',
     <><rect x="3.5" y="7" width="14" height="11" rx="1.5" /><path d="M6.5 7V5h14v11h-3M7 11h7M7 14h5" /></>],
-  ['#plan', 'Study Plans', 'A schedule that fits your dates',
-    <><rect x="4" y="5.5" width="16" height="14.5" rx="2" /><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4M8 13.5h2M14 13.5h2M8 16.5h2M14 16.5h2" /></>],
   ['#florida', 'Resources', 'Florida licensing steps, codes and references',
     <path d="M3 6.5c3-1.4 6-1.4 9 .5 3-1.9 6-1.9 9-.5V19c-3-1.4-6-1.4-9 .5-3-1.9-6-1.9-9-.5zM12 7v12.5" />],
 ];
@@ -49,7 +46,9 @@ export default function Home() {
   const name = loadName();
   const { goal } = loadDates();
   const today = new Date().toISOString().slice(0, 10);
-  const s = summary(best, passed, goal, today, loadLessons());
+  const lessons = loadLessons();
+  const path = loadPath();
+  const s = summary(best, passed, goal, today, lessons);
   const started = s.passed + s.inProgress;
   return (
     <div className="home">
@@ -81,14 +80,20 @@ export default function Home() {
 
       <LevelCard />
 
-      <div className="section-head"><h2>Exam Divisions</h2><a href="#divisions">View all →</a></div>
+      <div className="section-head"><h2>Courses</h2><a href="#learn">View all →</a></div>
       <div className="div-grid">
-        {s.each.map(d => (
-          <a key={d.id} className="card div-card" href={`#learn/${d.id}`}>
-            <span className="div-top"><DivisionIcon id={d.id} /><span><b>{d.code}</b><small>{d.name}</small></span></span>
-            <span className="div-bar"><span className="bar"><span style={{ width: `${d.percent}%` }} /></span><span>{d.passed ? 'Passed' : `${d.percent}%`}</span></span>
-          </a>
-        ))}
+        {s.each.map(d => {
+          const st = steps(d.id, lessons, path);
+          const at = stage(d.id, lessons, path);
+          const pct = Math.round((st.done / st.total) * 100);
+          return (
+            <a key={d.id} className="card div-card" href={`#learn/${d.id}`}>
+              <span className="div-top"><DivisionIcon id={d.id} /><span><b>{d.code}</b><small>{d.name}</small></span></span>
+              <span className="muted small">{at === 'done' ? '🏅 Badge earned' : at === 'lessons' ? `Lessons · ${st.done} of ${st.total - 2}` : at === 'quiz' ? 'Next: division quiz' : 'Next: practice exam'}</span>
+              <span className="div-bar"><span className="bar"><span style={{ width: `${pct}%` }} /></span><span>{pct}%</span></span>
+            </a>
+          );
+        })}
       </div>
 
       <div className="section-head"><h2>Study Tools</h2></div>
