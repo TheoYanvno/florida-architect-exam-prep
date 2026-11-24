@@ -300,6 +300,58 @@ const ART = {
       <T x="230" y="272" size="11">Section · south-facing room</T>
     </>
   ),
+
+  // --- PDD ---
+  'pdd-wall': () => (
+    <>
+      <path d="M0 40H40V0" className="fig-thin" /><T x="20" y="24" size="9">Window</T>
+      <rect x="40" y="40" width="40" height="10" className="fig-solid" />
+      {Array.from({ length: 19 }, (_, k) => 50 + k * 10).map((y) => <path key={y} d={`M40 ${y}H80`} className="fig-thin" />)}
+      <rect x="40" y="50" width="40" height="190" className="fig-brick" />
+      <rect x="100" y="50" width="20" height="190" className="fig-rigid" />
+      <path d="M123 50V240" className="fig-wrb" />
+      <rect x="125" y="50" width="10" height="190" className="fig-fill" />
+      <rect x="135" y="50" width="60" height="190" className="fig-batt" />
+      {[60, 140, 220].map((y) => <rect key={y} x="135" y={y} width="60" height="6" className="fig-solid" />)}
+      <rect x="195" y="50" width="8" height="190" className="fig-fill" />
+      <path d="M20 240H215V290M20 240V290" className="fig-line" />
+      <rect x="20" y="240" width="195" height="50" className="fig-concrete" />
+      <path d="M123 222L84 238L84 244" className="fig-flash" />
+      <T x="60" y="262" size="9">weeps</T>
+      {[['Brick veneer', 60], ['Air cavity', 90], ['Rigid insulation', 110], ['Water-resistive barrier', 123], ['Sheathing', 130], ['Steel studs, batt insulation', 165], ['Gypsum board', 199]].map(([label, x], k) => (
+        <g key={label}><path d={`M${x} ${70 + k * 22}H230`} className="fig-thin" /><T x="236" y={74 + k * 22} size="11" anchor="start" className="fig-label fig-plain">{label}</T></g>
+      ))}
+      <T x="300" y="250" size="11">Concrete foundation</T>
+      <T x="200" y="18" size="11">Wall section · outside at left</T>
+    </>
+  ),
+  'pdd-cricket': () => {
+    const arrow = (x1, y1, x2, y2) => `M${x1} ${y1}L${x2} ${y2}M${x2} ${y2}l-5 -8M${x2} ${y2}l5 -8`;
+    return (
+      <>
+        <rect x="30" y="30" width="340" height="240" className="fig-building" />
+        <rect x="160" y="120" width="80" height="60" className="fig-fill" /><T x="200" y="154" size="10">Equipment curb</T>
+        {[100, 200, 300].map((x) => <g key={x}><circle cx={x} cy="255" r="8" className="fig-fill" /><T x={x} y="259" size="9">D</T></g>)}
+        <path d={[arrow(100, 60, 100, 235), arrow(300, 60, 300, 235), arrow(200, 50, 200, 112), arrow(200, 195, 200, 238)].join(' ')} className="fig-slope" />
+        <T x="200" y="290" size="11">Roof plan · D = drain · arrows point downslope</T>
+        <North x={386} y={60} />
+      </>
+    );
+  },
+  'pdd-symbols': () => (
+    <>
+      {[['A', 65], ['B', 205], ['C', 345]].map(([l, x]) => (
+        <g key={l}><path d={`M${x} 53V250`} className="fig-grid-line" /><circle cx={x} cy="35" r="18" className="fig-line fig-bubble" /><T x={x} y="40" size="14">{l}</T></g>
+      ))}
+      <path d="M20 95H400M20 245H400" className="fig-line" />
+      <rect x="100" y="140" width="80" height="34" className="fig-thin" /><T x="140" y="155" size="10">OFFICE</T><T x="140" y="168" size="10">104</T>
+      <path d="M230 195H333" className="fig-cut" />
+      <circle cx="353" cy="195" r="20" className="fig-line fig-bubble" />
+      <path d="M333 195H373M353 215l-8 10h16z" className="fig-line" />
+      <T x="353" y="190" size="10">2</T><T x="353" y="208" size="8">A-301</T>
+      <North x={60} y={200} />
+    </>
+  ),
 };
 
 export const hasArt = (id) => id in ART;

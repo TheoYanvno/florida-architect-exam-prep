@@ -249,3 +249,12 @@ details.case h4 { margin:12px 0 4px; }
 .fig-glass { stroke:#2563eb; stroke-width:5; opacity:.7; }
 .fig-thick { stroke-width:5; }
 .fig-ray { fill:none; stroke:var(--orange); stroke-width:2; stroke-dasharray:6 4; }
+.fig-brick { fill:rgb(198 40 40 / .15); stroke:var(--text); }
+.fig-rigid { fill:rgb(242 107 33 / .18); stroke:var(--text); stroke-width:.8; }
+.fig-wrb { stroke:#2563eb; stroke-width:3; }
+.fig-batt { fill:rgb(234 179 8 / .18); stroke:var(--text); stroke-width:.8; }
+.fig-concrete { fill:rgb(83 96 125 / .2); stroke:var(--text); }
+.fig-flash { fill:none; stroke:var(--orange); stroke-width:3; }
+.fig-grid-line { fill:none; stroke:var(--muted); stroke-width:1; stroke-dasharray:14 4 3 4; }
+.fig-bubble { fill:var(--panel); }
+.fig-cut { fill:none; stroke:var(--text); stroke-width:3; stroke-dasharray:16 5 4 5; }
