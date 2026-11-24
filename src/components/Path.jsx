@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { DIVISIONS } from '../lib/are.js';
 import { loadLessons, lessonsFor } from '../lib/course/index.js';
-import { isCorrect, score, dealChoices } from '../lib/questions.js';
+import { isCorrect, isAnswered, answerText, score, dealChoices } from '../lib/questions.js';
+import ItemInput from './Item.jsx';
 import { loadMissed, saveMissed, updateMissed } from '../lib/missed.js';
 import { loadBest, recordBest, saveBest } from '../lib/scores.js';
 import { quizSet, examSet, examSeconds, loadPath, savePath, recordQuiz, recordExam, lessonsDone, quizPassed, recordDay, QUIZ_PASS, QUIZ_SIZE, EXAM_PASS } from '../lib/path.js';
@@ -30,22 +31,6 @@ function Locked({ d, children }) {
     </section>
   );
 }
-
-const Choices = ({ q, picked, onPick, reveal }) => (
-  <div role={q.type === 'single' ? 'radiogroup' : 'group'} className="choices">
-    {q.choices.map((c, k) => {
-      const state = reveal ? (q.answer.includes(k) ? 'right' : picked.includes(k) ? 'wrong' : '') : '';
-      return (
-        <button key={k} role={q.type === 'single' ? 'radio' : 'checkbox'} aria-checked={picked.includes(k)}
-          className={`choice ${picked.includes(k) ? 'picked' : ''} ${state}`} onClick={() => onPick(k)}>
-          {String.fromCharCode(65 + k)}. {c}
-        </button>
-      );
-    })}
-  </div>
-);
-
-const toggled = (q, picked, k) => (q.type === 'single' ? [k] : picked.includes(k) ? picked.filter(x => x !== k) : [...picked, k].sort());
 
 /** #quiz/pa: ten questions from the division's lessons, one at a time with the answer shown after each. */
 export function DivisionQuiz({ id }) {
@@ -97,15 +82,14 @@ export function DivisionQuiz({ id }) {
       <div className="quiz-dots" aria-hidden="true">{questions.map((x, k) => <span key={x.id} className={k < i ? (isCorrect(x, answers[x.id] || []) ? 'right' : 'wrong') : k === i ? 'now' : ''} />)}</div>
       <p className="muted">Question {i + 1} of {questions.length} · {q.section}</p>
       <h3>{q.prompt}</h3>
-      {q.type === 'multi' && !/select all/i.test(q.prompt) && <p className="muted">Select all that apply.</p>}
-      <Choices q={q} picked={picked} reveal={checked} onPick={k => !checked && setAnswers(a => ({ ...a, [q.id]: toggled(q, picked, k) }))} />
+      <ItemInput key={q.id} q={q} value={picked} reveal={checked} disabled={checked} onChange={v => setAnswers(a => ({ ...a, [q.id]: v }))} />
       {checked ? (
         <div className={`feedback ${ok ? 'ok' : 'bad'}`} aria-live="polite">
-          <strong>{ok ? 'Correct.' : 'Not quite.'}</strong> {q.explain}
+          <strong>{ok ? 'Correct.' : 'Not quite.'}</strong> {!ok && q.type !== 'single' && q.type !== 'multi' && <>Right answer: {answerText(q)}. </>}{q.explain}
           <div><button className="primary" onClick={() => { if (i + 1 < questions.length) { setChecked(false); setI(i + 1); } else finish(); }}>{i + 1 < questions.length ? 'Next question' : 'See my score'}</button></div>
         </div>
       ) : (
-        <button className="primary" disabled={!picked.length} onClick={() => setChecked(true)}>Check answer</button>
+        <button className="primary" disabled={!isAnswered(q, picked)} onClick={() => setChecked(true)}>Check answer</button>
       )}
     </section>
   );
@@ -191,7 +175,7 @@ function ExamRun({ d, questions, timed, onExit }) {
 
   const q = questions[i];
   const picked = answers[q.id] || [];
-  const answered = questions.filter(x => (answers[x.id] || []).length).length;
+  const answered = questions.filter(x => isAnswered(x, answers[x.id])).length;
   const flagged = flags.includes(q.id);
   return (
     <section className="card question exam">
@@ -201,14 +185,13 @@ function ExamRun({ d, questions, timed, onExit }) {
       </div>
       <nav className="palette" aria-label="Questions">
         {questions.map((x, k) => (
-          <button key={x.id} aria-label={`Question ${k + 1}${(answers[x.id] || []).length ? ', answered' : ''}${flags.includes(x.id) ? ', flagged' : ''}`} aria-current={k === i ? 'step' : undefined}
-            className={[(answers[x.id] || []).length && 'answered', flags.includes(x.id) && 'flagged'].filter(Boolean).join(' ')} onClick={() => setI(k)}>{k + 1}</button>
+          <button key={x.id} aria-label={`Question ${k + 1}${isAnswered(x, answers[x.id]) ? ', answered' : ''}${flags.includes(x.id) ? ', flagged' : ''}`} aria-current={k === i ? 'step' : undefined}
+            className={[isAnswered(x, answers[x.id]) && 'answered', flags.includes(x.id) && 'flagged'].filter(Boolean).join(' ')} onClick={() => setI(k)}>{k + 1}</button>
         ))}
       </nav>
       <p className="muted">Question {i + 1} of {questions.length} · {q.section}</p>
       <h3>{q.prompt}</h3>
-      {q.type === 'multi' && !/select all/i.test(q.prompt) && <p className="muted">Select all that apply.</p>}
-      <Choices q={q} picked={picked} reveal={false} onPick={k => setAnswers(a => ({ ...a, [q.id]: toggled(q, picked, k) }))} />
+      <ItemInput key={q.id} q={q} value={picked} onChange={v => setAnswers(a => ({ ...a, [q.id]: v }))} />
       <div className="row">
         <button disabled={i === 0} onClick={() => setI(i - 1)}>‹ Back</button>
         <button aria-pressed={flagged} onClick={() => setFlags(f => (flagged ? f.filter(x => x !== q.id) : [...f, q.id]))}>{flagged ? '⚑ Flagged' : '⚐ Flag'}</button>

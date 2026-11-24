@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { DIVISIONS } from '../lib/are.js';
-import { questionsFor, isCorrect, score, shuffled, mixedSet, dealChoices } from '../lib/questions.js';
+import { questionsFor, isCorrect, isAnswered, answerText, pickedText, score, shuffled, mixedSet, dealChoices } from '../lib/questions.js';
+import ItemInput, { ReviewFigure } from './Item.jsx';
 import { loadMissed, saveMissed, updateMissed, missedSet } from '../lib/missed.js';
 import { loadBest, recordBest, saveBest } from '../lib/scores.js';
 import { recordDay } from '../lib/path.js';
@@ -92,10 +93,6 @@ function Session({ division, questions, timed, onDone, onFinish }) {
 
   const q = questions[i];
   const picked = answers[q.id] || [];
-  const toggle = idx => {
-    if (checked) return;
-    setAnswers(a => ({ ...a, [q.id]: q.type === 'single' ? [idx] : picked.includes(idx) ? picked.filter(x => x !== idx) : [...picked, idx] }));
-  };
   const ok = isCorrect(q, picked);
   return (
     <section className="question">
@@ -104,25 +101,14 @@ function Session({ division, questions, timed, onDone, onFinish }) {
         {left !== null && <span className={left < 30 ? 'error' : 'muted'} aria-live="off">⏱ {Math.floor(left / 60)}:{String(left % 60).padStart(2, '0')}</span>}
       </div>
       <h3>{q.prompt}</h3>
-      {q.type === 'multi' && <p className="muted">Select all that apply.</p>}
-      <div role={q.type === 'single' ? 'radiogroup' : 'group'} className="choices">
-        {q.choices.map((c, idx) => {
-          const state = checked ? (q.answer.includes(idx) ? 'right' : picked.includes(idx) ? 'wrong' : '') : '';
-          return (
-            <button key={idx} role={q.type === 'single' ? 'radio' : 'checkbox'} aria-checked={picked.includes(idx)}
-              className={`choice ${picked.includes(idx) ? 'picked' : ''} ${state}`} onClick={() => toggle(idx)}>
-              {String.fromCharCode(65 + idx)}. {c}
-            </button>
-          );
-        })}
-      </div>
+      <ItemInput key={q.id} q={q} value={picked} reveal={checked} disabled={checked} onChange={v => setAnswers(a => ({ ...a, [q.id]: v }))} />
       {checked ? (
         <div className={`feedback ${ok ? 'ok' : 'bad'}`} aria-live="polite">
-          <strong>{ok ? 'Correct.' : 'Not quite.'}</strong> {q.explain}
+          <strong>{ok ? 'Correct.' : 'Not quite.'}</strong> {!ok && q.type !== 'single' && q.type !== 'multi' && <>Right answer: {answerText(q)}. </>}{q.explain}
           <div><button className="primary" onClick={() => { setChecked(false); setI(n => n + 1); }}>{i + 1 < questions.length ? 'Next question' : 'See results'}</button></div>
         </div>
       ) : (
-        <button className="primary" disabled={!picked.length} onClick={() => setChecked(true)}>Check answer</button>
+        <button className="primary" disabled={!isAnswered(q, picked)} onClick={() => setChecked(true)}>Check answer</button>
       )}
     </section>
   );
@@ -133,7 +119,6 @@ function Session({ division, questions, timed, onDone, onFinish }) {
 export function Review({ questions, answers }) {
   const wrong = questions.filter(q => !isCorrect(q, answers[q.id] || []));
   if (!wrong.length) return <p className="ok">You got every question right.</p>;
-  const letters = idx => idx.map(n => String.fromCharCode(65 + n)).join(', ');
   return (
     <div className="review">
       <h3>Review what you missed ({wrong.length})</h3>
@@ -144,8 +129,9 @@ export function Review({ questions, answers }) {
           return (
             <li key={q.id}>
               <p><strong>{q.prompt}</strong> <span className="muted">({q.section})</span></p>
-              <p>Right answer: {letters(q.answer)}. {q.answer.map(n => q.choices[n]).join('; ')}</p>
-              <p className="muted">{picked.length ? `You picked ${letters([...picked].sort())}.` : 'Not answered.'} {q.explain}</p>
+              <ReviewFigure q={q} value={picked} />
+              <p>Right answer: {answerText(q)}</p>
+              <p className="muted">{pickedText(q, picked)} {q.explain}</p>
             </li>
           );
         })}

@@ -4,6 +4,7 @@
 
 import { LESSON_QUESTIONS } from './course/index.js';
 import { EXAM_QUESTIONS } from './exam-questions.js';
+import { BANK_QUESTIONS } from './bank/index.js';
 
 const BASE = [
   {
@@ -306,7 +307,7 @@ const BASE = [
 ];
 
 // The practice pool: the original practice set plus every lesson's check questions.
-export const QUESTIONS = [...BASE, ...LESSON_QUESTIONS, ...EXAM_QUESTIONS];
+export const QUESTIONS = [...BASE, ...LESSON_QUESTIONS, ...EXAM_QUESTIONS, ...BANK_QUESTIONS];
 
 // A lesson's check: its own questions, then the division's practice questions on the same NCARB section,
 // so students meet every practice question while studying, before the quiz and the exam.
@@ -318,11 +319,74 @@ export function questionsFor(division) {
   return QUESTIONS.filter(q => q.division === division);
 }
 
-// True only when exactly the right choices are picked (ARE multi-select items have no partial credit).
-export function isCorrect(question, picked) {
-  const a = [...question.answer].sort();
+// --- Item types, like the ARE's ---
+//   single / multi: choices + answer (indexes). Multi has no partial credit.
+//   number:  answer (a number), optional tolerance and unit. The value is [typed text].
+//   hotspot: figure (id), target ({ x, y, w, h } or { points: [[x, y], ...] }). The value is [x, y], the spot tapped.
+//   drag:    items + slots, answer = the slot index for each item; order: true means one item per slot.
+//            The value is [slot index or null for each item].
+// Any item can belong to a case study (case: id), whose brief is shown with it.
+
+/** The number typed into a fill-in item, or NaN. Commas, $, % and spaces are ignored. */
+export const parseNumber = (text) => {
+  const t = String(text ?? '').replace(/[,$%\s]/g, '');
+  return /^-?\d*\.?\d+$/.test(t) ? Number(t) : NaN;
+};
+
+/** Whether a point lies inside a hot-spot target. */
+export function inTarget(target, x, y) {
+  if (target.points) {
+    let inside = false;
+    const p = target.points;
+    for (let i = 0, j = p.length - 1; i < p.length; j = i++) {
+      const [xi, yi] = p[i], [xj, yj] = p[j];
+      if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
+    }
+    return inside;
+  }
+  return x >= target.x && x <= target.x + target.w && y >= target.y && y <= target.y + target.h;
+}
+
+/** Whether an item has an answer to check. */
+export function isAnswered(q, v = []) {
+  if (q.type === 'number') return !Number.isNaN(parseNumber(v[0]));
+  if (q.type === 'drag') return q.items.every((_, i) => Number.isInteger(v[i]));
+  if (q.type === 'hotspot') return v.length === 2 && v.every(Number.isFinite);
+  return v.length > 0;
+}
+
+// True only when the answer is fully right (the ARE gives no partial credit).
+export function isCorrect(question, picked = []) {
+  const q = question;
+  if (q.type === 'number') {
+    const n = parseNumber(picked[0]);
+    return !Number.isNaN(n) && Math.abs(n - q.answer) <= (q.tolerance ?? 0) + 1e-9;
+  }
+  if (q.type === 'hotspot') return isAnswered(q, picked) && inTarget(q.target, picked[0], picked[1]);
+  if (q.type === 'drag') return q.items.every((_, i) => picked[i] === q.answer[i]);
+  const a = [...q.answer].sort();
   const p = [...new Set(picked)].sort();
   return a.length === p.length && a.every((v, i) => v === p[i]);
+}
+
+/** The right answer in words, for reviews. */
+export function answerText(q) {
+  if (q.type === 'number') return `${q.answer.toLocaleString('en-US')}${q.unit ? ` ${q.unit}` : ''}${q.tolerance ? ` (within ${q.tolerance})` : ''}`;
+  if (q.type === 'hotspot') return q.targetLabel || 'the highlighted area';
+  if (q.type === 'drag') {
+    if (q.order) return q.slots.map((slot, k) => `${slot}: ${q.items[q.answer.indexOf(k)]}`).join('; ');
+    return q.items.map((it, i) => `${it} → ${q.slots[q.answer[i]]}`).join('; ');
+  }
+  return q.answer.map(n => `${String.fromCharCode(65 + n)}. ${q.choices[n]}`).join('; ');
+}
+
+/** What was picked, in words. */
+export function pickedText(q, v = []) {
+  if (!isAnswered(q, v) && !(q.type === 'drag' && v.some(Number.isInteger))) return 'Not answered.';
+  if (q.type === 'number') return `You entered ${v[0]}.`;
+  if (q.type === 'hotspot') return 'Your spot is marked on the drawing.';
+  if (q.type === 'drag') return `You placed ${q.items.map((it, i) => `${it} → ${Number.isInteger(v[i]) ? q.slots[v[i]] : '(nothing)'}`).join('; ')}.`;
+  return `You picked ${[...v].sort().map(n => String.fromCharCode(65 + n)).join(', ')}.`;
 }
 
 // Score a set of answers: { [questionId]: [choice indexes] }. Returns totals and a per-section breakdown.
@@ -365,6 +429,15 @@ export function mixedSet(n = 20, seed = Date.now()) {
 // The same question with its choices in a new order (and its answer moved with them), so where the right
 // answer sits is never a clue. Each practice session deals the choices again.
 export function shuffleChoices(q, seed = Date.now()) {
+  if (q.type === 'drag') {
+    if (q.order) {
+      // Steps to put in order: deal the steps in a new order (the answer stays tied to each step).
+      const order = shuffled(q.items.map((_, i) => i), seed);
+      return { ...q, items: order.map(i => q.items[i]), answer: order.map(i => q.answer[i]) };
+    }
+    return q;
+  }
+  if (!q.choices) return q;
   const order = shuffled(q.choices.map((_, i) => i), seed);
   return { ...q, choices: order.map(i => q.choices[i]), answer: q.answer.map(a => order.indexOf(a)).sort((x, y) => x - y) };
 }

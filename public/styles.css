@@ -190,3 +190,49 @@ button.link { background:none; border:0; padding:0; color:var(--accent); text-de
 .tabs button { border:0; background:transparent; border-radius:9px; padding:8px 14px; font-weight:600; color:var(--muted); }
 .tabs button.on { background:var(--panel); color:var(--text); box-shadow:var(--shadow); }
 .choice:disabled { opacity:1; cursor:default; }
+
+/* New item types: number fill-in, hot spot, drag-and-place, case studies */
+.sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+.how { margin:4px 0 8px; }
+.number-in { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:12px 0; }
+.number-in input { width:11ch; font-size:1.2rem; padding:10px 12px; border-radius:10px; border:2px solid var(--line); background:var(--panel); color:var(--text); }
+.number-in input.right { border-color:var(--good); } .number-in input.wrong { border-color:var(--bad); }
+.number-in .unit { color:var(--muted); font-weight:600; }
+.hotspot { margin:10px 0; }
+.figure { display:block; width:100%; max-width:560px; height:auto; border:1px solid var(--line); border-radius:12px; background:var(--panel); touch-action:manipulation; cursor:crosshair; }
+.review-fig .figure { cursor:default; max-width:420px; }
+.fig-label { font:600 13px system-ui, sans-serif; fill:var(--text); }
+.fig-vert { writing-mode:vertical-rl; }
+.fig-ink { stroke:var(--text); fill:none; } .fig-solid { fill:var(--text); }
+.fig-site { fill:rgb(17 128 74 / .06); stroke:var(--text); stroke-width:2; stroke-dasharray:10 4 2 4; }
+.fig-building { fill:rgb(23 63 130 / .12); stroke:var(--text); stroke-width:3; }
+.fig-contour { fill:none; stroke:#a0703a; stroke-width:1.6; }
+.fig-dash { fill:none; stroke:var(--accent); stroke-width:1.5; stroke-dasharray:6 4; }
+.fig-hatch { fill:rgb(242 107 33 / .14); stroke:var(--orange); stroke-dasharray:4 3; }
+.fig-road { fill:rgb(83 96 125 / .25); }
+.fig-flood { fill:rgb(37 99 235 / .14); }
+.fig-water { fill:none; stroke:#2563eb; stroke-width:4; }
+.fig-tree { fill:rgb(17 128 74 / .22); stroke:#11804a; }
+.fig-line { fill:none; stroke:var(--text); stroke-width:2; }
+.fig-thin { fill:none; stroke:var(--text); stroke-width:1; }
+.fig-fill { fill:rgb(83 96 125 / .18); stroke:var(--text); stroke-width:1.5; }
+.fig-target { fill:rgb(17 128 74 / .18); stroke:var(--good); stroke-width:3; stroke-dasharray:7 4; }
+.fig-mark circle { fill:rgb(242 107 33 / .35); stroke:var(--orange); stroke-width:3; } .fig-mark path { stroke:var(--orange); stroke-width:2; }
+.fig-mark.right circle { fill:rgb(17 128 74 / .35); stroke:var(--good); } .fig-mark.right path { stroke:var(--good); }
+.fig-mark.wrong circle { fill:rgb(198 40 40 / .3); stroke:var(--bad); } .fig-mark.wrong path { stroke:var(--bad); }
+.fig-cursor circle { fill:none; stroke:var(--accent); stroke-width:2; stroke-dasharray:3 3; }
+.drag { margin:12px 0; }
+.drag-pool { display:flex; flex-wrap:wrap; gap:8px; min-height:44px; padding:10px; border:2px dashed var(--line); border-radius:12px; }
+.chip-item { padding:8px 12px; border-radius:10px; border:1px solid var(--line); background:var(--panel); color:var(--text); text-align:left; }
+.chip-item.held { border-color:var(--orange); box-shadow:0 0 0 3px rgb(242 107 33 / .3); }
+.chip-item.placed { display:block; width:100%; margin-top:6px; background:var(--bg); }
+.chip-item.right { border-color:var(--good); background:rgb(52 211 153 / .12); } .chip-item.wrong { border-color:var(--bad); background:rgb(248 113 113 / .12); }
+.drag-slots { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin-top:12px; }
+.slot { padding:8px; border-radius:12px; border:1px solid var(--line); background:var(--panel); min-height:70px; }
+.slot.ready { border-color:var(--orange); }
+.slot-label { width:100%; text-align:left; font-weight:700; background:none; border:0; padding:4px; color:var(--text); }
+.slot-label:disabled { opacity:1; cursor:default; }
+details.case { margin:10px 0 14px; padding:10px 14px; border:1px solid var(--line); border-left:5px solid var(--navy2); border-radius:12px; background:var(--bg); }
+details.case summary { cursor:pointer; padding:4px 0; }
+details.case h4 { margin:12px 0 4px; }
+.table-wrap { overflow-x:auto; }
