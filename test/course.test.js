@@ -15,10 +15,9 @@ test('every lesson teaches one real NCARB section and is complete', () => {
   }
 });
 
-test('divisions with lessons cover each NCARB section exactly once, in NCARB order', () => {
+test('every division has one lesson for each NCARB section, in NCARB order', () => {
   for (const d of DIVISIONS) {
     const ls = lessonsFor(d.id);
-    if (!ls.length) continue;
     assert.deepEqual(ls.map(l => l.section), d.sections.map(s => s.name), d.id);
   }
 });

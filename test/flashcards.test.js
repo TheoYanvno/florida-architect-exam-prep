@@ -8,14 +8,17 @@ function memory(initial) {
   return { getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, v) };
 }
 
-test('every division has at least 6 cards, each with a term and a real definition', () => {
+test('every division has 50 cards with unique terms, each with a term and a real definition', () => {
   const ids = new Set();
   for (const c of CARDS) {
     assert.ok(!ids.has(c.id), c.id); ids.add(c.id);
     assert.ok(DIVISIONS.some((d) => d.id === c.division), c.id);
     assert.ok(c.term.length > 2 && c.definition.length > 40, c.id);
   }
-  for (const d of DIVISIONS) assert.ok(cardsFor(d.id).length >= 6, d.id);
+  for (const d of DIVISIONS) {
+    assert.equal(cardsFor(d.id).length, 50, d.id);
+    assert.equal(new Set(cardsFor(d.id).map((c) => c.term.toLowerCase())).size, 50, d.id);
+  }
 });
 
 test('known cards save, load, and drop ids that are not cards', () => {
