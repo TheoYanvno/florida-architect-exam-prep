@@ -244,3 +244,4 @@ details.case h4 { margin:12px 0 4px; }
 .fig-duct { fill:rgb(37 99 235 / .12); stroke:#2563eb; stroke-width:2; }
 .exhibit { margin:10px 0; }
 .exhibit .figure { cursor:default; }
+.fig-slope { fill:none; stroke:var(--accent); stroke-width:2; }

@@ -199,6 +199,62 @@ const ART = {
       <T x="200" y="245" size="11">Section · heights above finished floor</T>
     </>
   ),
+
+  // --- CE ---
+  'ce-sov': () => {
+    const rows = [['Sitework', '120,000', '120,000', '100%'], ['Concrete', '300,000', '240,000', '80%'], ['Masonry', '180,000', '198,000', '110%'], ['Roofing', '90,000', '0', '0%'], ['Electrical', '210,000', '63,000', '30%']];
+    const cols = [60, 170, 290, 375];
+    return (
+      <>
+        <rect x="10" y="18" width="400" height="32" className="fig-fill" />
+        {['Item', 'Scheduled value', 'Completed to date', '%'].map((h, k) => <T key={h} x={cols[k]} y="39" size="11">{h}</T>)}
+        {rows.map((r, i) => (
+          <g key={r[0]}>
+            <rect x="10" y={50 + i * 32} width="400" height="32" className="fig-thin" />
+            {r.map((c, k) => <T key={k} x={cols[k]} y={71 + i * 32} className="fig-label fig-plain">{c}</T>)}
+          </g>
+        ))}
+        <T x="210" y="226" size="11">Payment application no. 5 (part) · dollars</T>
+      </>
+    );
+  },
+  'ce-guard': () => {
+    const steps = [0, 1, 2, 3, 4, 5];
+    const nose = (k) => [40 + k * 34, 260 - (k + 1) * 20];
+    return (
+      <>
+        <path d="M20 260H390" className="fig-line" />
+        <path d={'M40 260' + steps.map((k) => ` V${260 - (k + 1) * 20} H${40 + (k + 1) * 34}`).join('')} className="fig-line" />
+        <rect x="244" y="140" width="146" height="10" className="fig-fill" />
+        <path d={`M${nose(0)[0]} ${nose(0)[1] - 103}L${nose(5)[0]} ${nose(5)[1] - 103}`} className="fig-line" />
+        {steps.filter((k) => k % 2 === 0).map((k) => <path key={k} d={`M${nose(k)[0] + 6} ${nose(k)[1]}v-103`} className="fig-thin" />)}
+        <path d="M300 140V37M370 140V37M300 37H370M300 88H370" className="fig-line" />
+        <T x="335" y="30" size="11">Guard 36"</T>
+        <T x="120" y="100" size="11">Handrail 36" above nosings</T>
+        <T x="70" y="276" size="10">Riser 7"</T>
+        <T x="170" y="276" size="10">Tread 11"</T>
+        <T x="320" y="166" size="10">Landing</T>
+        <T x="200" y="294" size="11">Stair section as built · commercial building</T>
+      </>
+    );
+  },
+  'ce-roof': () => {
+    const arrow = (x1, y1, x2, y2) => {
+      const a = Math.atan2(y2 - y1, x2 - x1), h = 8;
+      return `M${x1} ${y1}L${x2} ${y2}M${x2} ${y2}l${-h * Math.cos(a - 0.5)} ${-h * Math.sin(a - 0.5)}M${x2} ${y2}l${-h * Math.cos(a + 0.5)} ${-h * Math.sin(a + 0.5)}`;
+    };
+    return (
+      <>
+        <rect x="30" y="30" width="340" height="240" className="fig-building" />
+        {[[80, 90], [80, 210], [200, 150]].map(([x, y]) => (
+          <g key={`${x}${y}`}><circle cx={x} cy={y} r="9" className="fig-fill" /><T x={x} y={y + 4} size="10">D</T></g>
+        ))}
+        <path d={[arrow(140, 60, 95, 84), arrow(140, 240, 95, 216), arrow(260, 150, 216, 150), arrow(200, 230, 200, 166), arrow(200, 70, 200, 134), arrow(290, 95, 345, 55), arrow(300, 60, 350, 45), arrow(330, 110, 360, 70)].join(' ')} className="fig-slope" />
+        <T x="200" y="290" size="11">Roof plan · D = roof drain · arrows point downslope</T>
+        <North x={386} y={240} />
+      </>
+    );
+  },
 };
 
 export const hasArt = (id) => id in ART;
