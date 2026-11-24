@@ -9,6 +9,13 @@ import PA from './pa.js';
 import PPD from './ppd.js';
 import PDD from './pdd.js';
 import CE from './ce.js';
+import PCM2 from './pcm2.js';
+import PJM2 from './pjm2.js';
+import PA2 from './pa2.js';
+import PPD2 from './ppd2.js';
+import PDD2 from './pdd2.js';
+import CE2 from './ce2.js';
+import { UNITS, TEACHES } from './units.js';
 
 const withIds = (division, lessons) => lessons.map((l, i) => ({
   ...l, id: `${division}-l${i + 1}`, division,
@@ -16,12 +23,25 @@ const withIds = (division, lessons) => lessons.map((l, i) => ({
 }));
 
 export const LESSONS = [
-  ...withIds('pcm', PCM), ...withIds('pjm', PJM), ...withIds('pa', PA),
-  ...withIds('ppd', PPD), ...withIds('pdd', PDD), ...withIds('ce', CE),
+  ...withIds('pcm', [...PCM, ...PCM2]), ...withIds('pjm', [...PJM, ...PJM2]), ...withIds('pa', [...PA, ...PA2]),
+  ...withIds('ppd', [...PPD, ...PPD2]), ...withIds('pdd', [...PDD, ...PDD2]), ...withIds('ce', [...CE, ...CE2]),
 ];
 
-export const lessonsFor = (division) => LESSONS.filter((l) => l.division === division);
 export const lessonById = (id) => LESSONS.find((l) => l.id === id) || null;
+
+/** A division's units: [{ title, lessons: [lesson objects] }], four units of three lessons. */
+export function unitsFor(division) {
+  if (UNITS[division]) return UNITS[division].map((u) => ({ title: u.title, lessons: u.lessons.map(lessonById).filter(Boolean) }));
+  const all = LESSONS.filter((l) => l.division === division);
+  const out = [];
+  for (let i = 0; i < all.length; i += 3) out.push({ title: all[i].section, lessons: all.slice(i, i + 3) });
+  return out;
+}
+/** A division's lessons in course order (unit by unit). */
+export const lessonsFor = (division) => unitsFor(division).flatMap((u) => u.lessons);
+/** The ids of the practice and exam questions a lesson teaches. */
+export const teachesFor = (lessonId) => TEACHES[lessonId] || [];
+export { UNITS, TEACHES };
 export const LESSON_QUESTIONS = LESSONS.flatMap((l) => l.quiz);
 
 // --- which lessons you have finished, saved in the browser: { [lessonId]: best check percent } ---

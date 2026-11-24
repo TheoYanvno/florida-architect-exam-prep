@@ -175,6 +175,14 @@ export default [
       { h: 'Risk on the project', p: [
         'Most claims come from a few causes: poor communication, unclear scope, client expectations that were never written down, and coordination errors. Clear documentation, written confirmation of decisions, and following the firm\'s quality procedures are the best defenses.',
       ] },
+      { h: 'Quality control tools', list: [
+        'A QA/QC checklist for each drawing type checks the set systematically for completeness, coordination and code compliance before issue.',
+        'Independent reviews at planned points (such as 50% and 90% complete) by a senior architect who wasn\'t on the team, while there is still time to fix problems.',
+        'Overlaying consultants\' drawings or running clash detection catches conflicts between disciplines, such as a duct whose top is higher than the bottom of the beam it crosses.',
+        'A code analysis sheet summarizes occupancy, construction type, allowable area, occupant loads and egress, so reviewers and the team share one design basis.',
+        'Say each requirement once, in its proper place: if specifications and drawing notes both describe the roofing, they drift apart and conflict.',
+        'When a review finds an error, such as a missing corridor fire rating, fix it, look for the same error elsewhere, and add it to the firm\'s checklist.',
+      ] },
     ],
     example: { title: 'Cost of a late fix', steps: [
       'A door swing conflicts with a column. Caught at a 50% CD review, the fix is an hour of drafting.',

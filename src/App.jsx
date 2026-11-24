@@ -44,8 +44,8 @@ const ICONS = {
 export const Icon = ({ name, size = 26 }) => <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" className="icon">{ICONS[name]}</svg>;
 
 const readHash = () => {
-  const [page = 'home', arg = null] = (globalThis.location?.hash || '').replace(/^#/, '').split('/');
-  return { page: PAGES[page] ? page : 'home', arg };
+  const [page = 'home', ...rest] = (globalThis.location?.hash || '').replace(/^#/, '').split('/');
+  return { page: PAGES[page] ? page : 'home', arg: rest.length ? rest.join('/') : null };
 };
 
 export default function App() {

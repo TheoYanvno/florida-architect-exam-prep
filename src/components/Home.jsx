@@ -1,9 +1,10 @@
 import { loadBest } from '../lib/scores.js';
 import { loadDates } from '../lib/dates.js';
 import { loadPassed, loadName, summary, greeting } from '../lib/progress.js';
-import { loadLessons } from '../lib/course/index.js';
 import { LevelCard } from './Achievements.jsx';
 import { loadPath, steps, stage } from '../lib/path.js';
+import { loadLessons, lessonsFor, finished } from '../lib/course/index.js';
+const lessonCount = (id, done) => lessonsFor(id).filter(l => finished(done, l.id)).length;
 
 // Line icons for the six divisions, drawn for this app.
 const DIV_ICONS = {
@@ -89,7 +90,7 @@ export default function Home() {
           return (
             <a key={d.id} className="card div-card" href={`#learn/${d.id}`}>
               <span className="div-top"><DivisionIcon id={d.id} /><span><b>{d.code}</b><small>{d.name}</small></span></span>
-              <span className="muted small">{at === 'done' ? '🏅 Badge earned' : at === 'lessons' ? `Lessons · ${st.done} of ${st.total - 2}` : at === 'quiz' ? 'Next: division quiz' : 'Next: practice exam'}</span>
+              <span className="muted small">{at === 'done' ? '🏅 Badge earned' : at === 'lessons' ? `Lessons · ${lessonCount(d.id, lessons)} of ${st.total - 5}` : at === 'quiz' ? 'Next: unit quiz' : 'Next: practice exam'}</span>
               <span className="div-bar"><span className="bar"><span style={{ width: `${pct}%` }} /></span><span>{pct}%</span></span>
             </a>
           );

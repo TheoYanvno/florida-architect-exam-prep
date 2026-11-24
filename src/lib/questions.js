@@ -2,7 +2,7 @@
 // to a division and one of its NCARB sections, has one or more correct choices, and explains the answer.
 // Types: 'single' (pick one) and 'multi' (pick all that apply), the two most common ARE item types.
 
-import { LESSON_QUESTIONS } from './course/index.js';
+import { LESSON_QUESTIONS, teachesFor, UNITS } from './course/index.js';
 import { EXAM_QUESTIONS } from './exam-questions.js';
 import { BANK_QUESTIONS } from './bank/index.js';
 
@@ -312,8 +312,14 @@ export const QUESTIONS = [...BASE, ...LESSON_QUESTIONS, ...EXAM_QUESTIONS, ...BA
 // A lesson's check: its own questions, then the division's practice questions on the same NCARB section,
 // so students meet every practice question while studying, before the quiz and the exam.
 export const PRACTICE_QUESTIONS = BASE;
-export const lessonCheck = lesson =>
-  [...lesson.quiz, ...BASE.filter(q => q.division === lesson.division && q.section === lesson.section)];
+// A lesson's check: its own questions, then questions it teaches from the practice bank (not exam-only or case
+// study items), up to eight in all.
+export const lessonCheck = lesson => {
+  const byId = new Map(QUESTIONS.map(q => [q.id, q]));
+  const taught = teachesFor(lesson.id).map(id => byId.get(id)).filter(q => q && !q.exam && !q.case);
+  const legacy = UNITS[lesson.division] ? [] : BASE.filter(q => q.division === lesson.division && q.section === lesson.section);
+  return [...lesson.quiz, ...taught, ...legacy].slice(0, Math.max(8, lesson.quiz.length));
+};
 
 export function questionsFor(division) {
   return QUESTIONS.filter(q => q.division === division);

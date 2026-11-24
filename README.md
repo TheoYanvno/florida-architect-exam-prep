@@ -4,13 +4,13 @@ A study app for the architect registration exam (ARE® 5.0) and the path to an a
 
 **Live app:** [theoyanvno.github.io/florida-architect-exam-prep](https://theoyanvno.github.io/florida-architect-exam-prep/)
 
-**Status:** finished. Each of the six divisions is a full path of lessons, a quiz and a practice exam, with 573 questions, full-length practice exams, 300 flashcards and 32 achievements, and it installs on iPhone and Android.
+**Status:** finished. Each of the six divisions is a course of 12 lessons in four units, each unit closed by a quiz, then a full-length practice exam, with 573 questions, full-length practice exams, 300 flashcards and 32 achievements, and it installs on iPhone and Android.
 
 ## Screenshots
 
 | Home | Course | Lesson |
 |---|---|---|
-| <img src="screenshots/home.png" alt="Home: overall progress ring, days to goal, your level, points and streak, and a course card for each division" width="240"> | <img src="screenshots/course.png" alt="A division's path: lessons, then the division quiz, then the practice exam" width="240"> | <img src="screenshots/lesson.png" alt="A lesson with a worked example" width="240"> |
+| <img src="screenshots/home.png" alt="Home: overall progress ring, days to goal, your level, points and streak, and a course card for each division" width="240"> | <img src="screenshots/course.png" alt="A division course: units of three lessons, each ending with a unit quiz" width="240"> | <img src="screenshots/lesson.png" alt="A lesson with a worked example" width="240"> |
 | **Practice exam** | **Achievements** | **Study plan** |
 | <img src="screenshots/exam.png" alt="A full-length practice exam with a hot-spot question on a drawing" width="240"> | <img src="screenshots/achievements.png" alt="Division badges, one earned and the rest showing progress" width="240"> | <img src="screenshots/plan.png" alt="A study plan spread between start and goal dates" width="240"> |
 | **Practice** | | |
@@ -28,17 +28,17 @@ It opens full screen from its own icon, keeps your progress on the phone, and wo
 
 ## How the course works
 
-Like CodeForge, each division is a path in three steps:
+Like CodeForge, each division is a course of four units:
 
-1. **Lessons.** One lesson for each NCARB content section. Each one teaches the material, works the numbers, sums up what to remember and ends with a check: four questions on the lesson plus the division's practice questions on that section, five to seven in all (75% finishes it).
-2. **Division quiz.** Unlocks when every lesson is finished: 10 questions on what the lessons taught, with the answer and explanation after each one. Pass with 75%.
-3. **Practice exam.** Unlocks when the quiz is passed. It is full length, with the real division's item count (65 for PcM, 75 for PjM, PA and CE, 100 for PPD and PDD), spread across NCARB's sections by its published weights and ending with a case study. Each exam draws a new mix from the bank. As on the real exam, you don't see answers until you submit, you can flag questions and jump between them, and the timer runs at the real division's length. You can stop and resume later. Pass with 70%; results are broken down by NCARB section.
+1. **Lessons.** Each unit has three lessons (12 per division, 72 in all). Each one teaches the material in plain words, works the numbers, sums up what to remember and ends with a check drawn from the questions it teaches (75% finishes it). Every question in the bank, including every practice exam question, is assigned to the lesson that teaches it.
+2. **Unit quiz.** After each unit's three lessons: 10 questions on what those lessons taught, with the answer and explanation after each one. Pass with 75%.
+3. **Practice exam.** Unlocks when all four unit quizzes are passed. It is full length, with the real division's item count (65 for PcM, 75 for PjM, PA and CE, 100 for PPD and PDD), spread across NCARB's sections by its published weights and ending with a case study. Each exam draws a new mix from the bank. As on the real exam, you don't see answers until you submit, you can flag questions and jump between them, and the timer runs at the real division's length. You can stop and resume later. Pass with 70%; results are broken down by NCARB section.
 
-Pass all three to earn the division's badge. **Achievements** award points (20 per lesson, 50 per quiz, 100 per exam, 2 per flashcard). There are three levels (Candidate, Course graduate, Exam ready), a badge for each division and 23 milestones, among them Perfect quiz, Beat the clock, Halfway there (3 divisions finished), Card sharp and Total recall (70% and 100% on a flashcard quiz) and streaks from 3 days up to six months. Free practice and flashcards stay open at any time.
+Finish every lesson, pass the four unit quizzes and pass the exam to earn the division's badge. **Achievements** award points (20 per lesson, 25 per unit quiz, 100 per exam, 2 per flashcard). There are three levels (Candidate, Course graduate, Exam ready), a badge for each division and 23 milestones, among them Perfect quiz, Beat the clock, Halfway there (3 divisions finished), Card sharp and Total recall (70% and 100% on a flashcard quiz) and streaks from 3 days up to six months. Free practice and flashcards stay open at any time.
 
 ## What it covers
 
-- **A full course:** 27 lessons, one for each NCARB content section of the six divisions (about 5½ hours of reading). Each lesson teaches the material in plain words, works examples where numbers matter (fees, earned value, FAR, exit separation, stairs, payment applications), sums up what to remember, and ends with a check of five to seven questions (four on the lesson plus the practice questions on that section); 75% finishes the lesson
+- **A full course:** 72 lessons in 24 units, covering every NCARB content section of the six divisions (about 14 hours of reading). Each lesson teaches the material in plain words, works examples where numbers matter, sums up what to remember and ends with a check; a quiz closes each unit
 - Readiness for each division counts lessons finished (40%) and your best practice or exam score (60%)
 - A home screen with your overall progress, days to your goal date, divisions left and your practice average, your level and streak, a course card for each division showing your next step, and the study tools (exam divisions, flashcards and resources)
 - A Progress page to mark divisions passed, and a Profile page for your name, your dates and installing on iPhone

@@ -63,7 +63,7 @@ export default function Achievements() {
           <span><b>{days}</b> day streak</span>
           <span><b>{a.earned}</b> badges</span>
         </div>
-        <p className="muted small">{POINTS.lesson} points for every lesson you finish, {POINTS.quiz} for every division quiz you pass, {POINTS.exam} for every practice exam you pass and {POINTS.card} for every flashcard you know. A day counts toward your streak when you finish a lesson check, a quiz, an exam, a practice set or a flashcard.</p>
+        <p className="muted small">{POINTS.lesson} points for every lesson you finish, {POINTS.quiz} for every unit quiz you pass, {POINTS.exam} for every practice exam you pass and {POINTS.card} for every flashcard you know. A day counts toward your streak when you finish a lesson check, a quiz, an exam, a practice set or a flashcard.</p>
       </section>
 
       <h2 className="group">Level</h2>

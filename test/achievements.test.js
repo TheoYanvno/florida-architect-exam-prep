@@ -16,8 +16,8 @@ test('nothing is earned on a fresh start', () => {
 
 test('points add up', () => {
   const lessons = Object.fromEntries(lessonsFor('pa').map(l => [l.id, PASS_MARK]));
-  const state = { ...blank, lessons, path: { quiz: { pa: 80 }, exam: { pa: { percent: 70, timed: false } } }, known: CARDS.slice(0, 5).map(c => c.id) };
-  assert.equal(points(state), lessonsFor('pa').length * POINTS.lesson + POINTS.quiz + POINTS.exam + 5 * POINTS.card);
+  const state = { ...blank, lessons, path: { quiz: {}, units: { pa: [80, 90, 60, 75] }, exam: { pa: { percent: 70, timed: false } } }, known: CARDS.slice(0, 5).map(c => c.id) };
+  assert.equal(points(state), lessonsFor('pa').length * POINTS.lesson + 3 * POINTS.quiz + POINTS.exam + 5 * POINTS.card);
 });
 
 test('finishing a division earns its badge and the first milestones', () => {

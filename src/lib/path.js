@@ -4,7 +4,7 @@
 // best scores, flashcards) is never touched. Pure functions; storage is passed in so tests can use a fake.
 import { QUESTIONS, shuffled } from './questions.js';
 import { DIVISIONS } from './are.js';
-import { lessonsFor, finished } from './course/index.js';
+import { lessonsFor, finished, unitsFor, teachesFor } from './course/index.js';
 
 export const QUIZ_SIZE = 10;
 export const QUIZ_PASS = 75;
@@ -76,12 +76,43 @@ export function examSeconds(division, n) {
   return d ? Math.round((d.testMinutes * 60 / d.items) * n) : 0;
 }
 
-// --- saved results: { quiz: { pa: best% }, exam: { pa: { percent, timed } } } ---
+// --- unit quizzes: after every three lessons, ten questions on what those lessons taught ---
+/** Questions for one unit's quiz: the unit's lesson check questions and the bank questions its lessons teach. */
+export function unitPool(division, unit) {
+  const u = unitsFor(division)[unit];
+  if (!u) return [];
+  const byId = new Map(QUESTIONS.map(q => [q.id, q]));
+  const ids = new Set();
+  const out = [];
+  for (const l of u.lessons) {
+    for (const q of [...l.quiz, ...teachesFor(l.id).map(id => byId.get(id))]) {
+      if (q && !q.exam && !q.case && !ids.has(q.id)) { ids.add(q.id); out.push(q); }
+    }
+  }
+  return out;
+}
+export const unitQuizSet = (division, unit, seed = Date.now()) => shuffled(unitPool(division, unit), seed).slice(0, QUIZ_SIZE);
+export const unitCount = division => unitsFor(division).length;
+export const unitLessonsDone = (division, unit, lessons) => (unitsFor(division)[unit]?.lessons || []).every(l => finished(lessons, l.id));
+export const unitPassed = (division, unit, path) => (path.units?.[division]?.[unit] ?? -1) >= QUIZ_PASS;
+export const unitsPassed = (division, path) => Array.from({ length: unitCount(division) }, (_, u) => unitPassed(division, u, path)).filter(Boolean).length;
+
+/** Keep the best score for one unit quiz. */
+export function recordUnit(path, division, unit, percent) {
+  const row = [...(path.units?.[division] || [])];
+  row[unit] = Math.max(row[unit] ?? 0, percent);
+  return { ...path, units: { ...(path.units || {}), [division]: row } };
+}
+
+// --- saved results: { quiz: { pa: best% } (the old single quiz), units: { pa: [best%, ...] }, exam: { pa: { percent, timed } } } ---
 export function loadPath(storage = globalThis.localStorage) {
-  const out = { quiz: {}, exam: {} };
+  const out = { quiz: {}, units: {}, exam: {} };
   try {
     const raw = JSON.parse(storage?.getItem(KEY) || '{}') || {};
     for (const [id, v] of Object.entries(raw.quiz || {})) if (IDS.has(id) && pct(v)) out.quiz[id] = v;
+    for (const [id, v] of Object.entries(raw.units || {})) {
+      if (IDS.has(id) && Array.isArray(v)) out.units[id] = v.slice(0, 8).map(x => (pct(x) ? x : null));
+    }
     for (const [id, v] of Object.entries(raw.exam || {})) {
       if (IDS.has(id) && v && pct(v.percent)) out.exam[id] = { percent: v.percent, timed: !!v.timed };
     }
@@ -106,23 +137,31 @@ export function recordExam(path, division, percent, timed) {
 }
 
 export const lessonsDone = (division, lessons) => lessonsFor(division).every(l => finished(lessons, l.id));
-export const quizPassed = (division, path) => (path.quiz[division] ?? -1) >= QUIZ_PASS;
+/** The practice exam unlocks when every unit quiz is passed (or the old single division quiz was, so saved progress keeps its access). */
+export const quizPassed = (division, path) => unitsPassed(division, path) === unitCount(division) || (path.quiz?.[division] ?? -1) >= QUIZ_PASS;
 export const examPassed = (division, path) => (path.exam[division]?.percent ?? -1) >= EXAM_PASS;
 
-/** Where you are on a division's path: 'lessons', 'quiz', 'exam' or 'done'. */
+/** The first unit not yet finished (its lessons and its quiz), or null when all are. */
+export function currentUnit(division, lessons, path) {
+  for (let u = 0; u < unitCount(division); u++) if (!unitLessonsDone(division, u, lessons) || !unitPassed(division, u, path)) return u;
+  return null;
+}
+
+/** Where you are on a division's path: 'lessons', 'quiz' (a unit quiz), 'exam' or 'done'. */
 export function stage(division, lessons, path) {
-  if (!lessonsDone(division, lessons)) return 'lessons';
-  if (!quizPassed(division, path)) return 'quiz';
+  const u = currentUnit(division, lessons, path);
+  if (u !== null && !quizPassed(division, path)) return unitLessonsDone(division, u, lessons) ? 'quiz' : 'lessons';
+  if (!lessonsDone(division, lessons) && !examPassed(division, path)) return 'lessons';
   if (!examPassed(division, path)) return 'exam';
   return 'done';
 }
 
-/** How many of a division's steps are done: one per lesson, plus the quiz and the exam. */
+/** How many of a division's steps are done: one per lesson, one per unit quiz, and the exam. */
 export function steps(division, lessons, path) {
   const all = lessonsFor(division);
   return {
-    done: all.filter(l => finished(lessons, l.id)).length + (quizPassed(division, path) ? 1 : 0) + (examPassed(division, path) ? 1 : 0),
-    total: all.length + 2,
+    done: all.filter(l => finished(lessons, l.id)).length + unitsPassed(division, path) + (examPassed(division, path) ? 1 : 0),
+    total: all.length + unitCount(division) + 1,
   };
 }
 

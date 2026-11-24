@@ -1,12 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
 import { DIVISIONS } from '../src/lib/are.js';
-import { lessonsFor, PASS_MARK } from '../src/lib/course/index.js';
+import { lessonsFor, unitsFor, PASS_MARK } from '../src/lib/course/index.js';
 import { QUESTIONS } from '../src/lib/questions.js';
 import { EXAM_QUESTIONS } from '../src/lib/exam-questions.js';
 import {
   quizPool, examPool, quizSet, examSet, examLength, loadRun, saveRun, clearRun, examSeconds, loadPath, savePath, recordQuiz, recordExam,
-  stage, steps, loadDays, recordDay, streak, bestStreak, QUIZ_SIZE, QUIZ_PASS, EXAM_PASS,
+  stage, steps, currentUnit, recordUnit, unitPool, unitQuizSet, quizPassed, loadDays, recordDay, streak, bestStreak, QUIZ_SIZE, QUIZ_PASS, EXAM_PASS,
 } from '../src/lib/path.js';
 
 const store = () => { const m = new Map(); return { getItem: k => m.get(k) ?? null, setItem: (k, v) => m.set(k, String(v)), removeItem: k => m.delete(k) }; };
@@ -69,17 +69,37 @@ test('exam time keeps the real pace', () => {
   assert.equal(examSeconds('nope', 30), 0);
 });
 
-test('the path: lessons, then the quiz, then the exam', () => {
-  const empty = { quiz: {}, exam: {} };
+test('the path: three lessons and a unit quiz, four times, then the exam', () => {
+  const empty = { quiz: {}, units: {}, exam: {} };
+  const units = unitsFor('pa');
+  const doneThrough = n => Object.fromEntries(units.slice(0, n).flatMap(u => u.lessons).map(l => [l.id, PASS_MARK]));
   assert.equal(stage('pa', {}, empty), 'lessons');
-  assert.equal(stage('pa', allDone('pa'), empty), 'quiz');
-  let p = recordQuiz(empty, 'pa', QUIZ_PASS - 5);
-  assert.equal(stage('pa', allDone('pa'), p), 'quiz');
-  p = recordQuiz(p, 'pa', QUIZ_PASS);
-  assert.equal(stage('pa', allDone('pa'), p), 'exam');
+  assert.equal(stage('pa', doneThrough(1), empty), 'quiz');
+  assert.equal(currentUnit('pa', doneThrough(1), empty), 0);
+  let p = recordUnit(empty, 'pa', 0, QUIZ_PASS - 5);
+  assert.equal(stage('pa', doneThrough(1), p), 'quiz');
+  p = recordUnit(p, 'pa', 0, QUIZ_PASS);
+  assert.equal(stage('pa', doneThrough(1), p), 'lessons');
+  assert.equal(currentUnit('pa', doneThrough(1), p), 1);
+  for (const u of [1, 2, 3]) p = recordUnit(p, 'pa', u, 90);
+  assert.equal(quizPassed('pa', p), true);
+  assert.equal(stage('pa', doneThrough(4), p), 'exam');
   p = recordExam(p, 'pa', EXAM_PASS, false);
-  assert.equal(stage('pa', allDone('pa'), p), 'done');
-  assert.deepEqual(steps('pa', allDone('pa'), p), { done: lessonsFor('pa').length + 2, total: lessonsFor('pa').length + 2 });
+  assert.equal(stage('pa', doneThrough(4), p), 'done');
+  assert.deepEqual(steps('pa', doneThrough(4), p), { done: 12 + 4 + 1, total: 12 + 4 + 1 });
+  // the old single division quiz still unlocks the exam for people who passed it
+  assert.equal(quizPassed('pa', { quiz: { pa: 80 }, units: {}, exam: {} }), true);
+});
+
+test('unit quizzes draw only on what that unit teaches', () => {
+  for (const d of DIVISIONS) {
+    for (let u = 0; u < 4; u++) {
+      const pool = unitPool(d.id, u);
+      assert.ok(pool.length >= QUIZ_SIZE, `${d.id} unit ${u + 1}: ${pool.length}`);
+      assert.ok(pool.every(q => !q.exam && !q.case && q.division === d.id));
+      assert.equal(unitQuizSet(d.id, u, 3).length, QUIZ_SIZE);
+    }
+  }
 });
 
 test('best scores are kept, and a timed pass is remembered', () => {
@@ -96,10 +116,10 @@ test('saved results are checked on load and older progress is untouched', () => 
   const s = store();
   s.setItem('are-prep:lessons', '{"pa-l1":80}');
   savePath({ quiz: { pa: 80, bogus: 50, ce: 140 }, exam: { pa: { percent: 72, timed: 1 }, pjm: { percent: 'x' } } }, s);
-  assert.deepEqual(loadPath(s), { quiz: { pa: 80 }, exam: { pa: { percent: 72, timed: true } } });
+  assert.deepEqual(loadPath(s), { quiz: { pa: 80 }, units: {}, exam: { pa: { percent: 72, timed: true } } });
   assert.equal(s.getItem('are-prep:lessons'), '{"pa-l1":80}');
   s.setItem('are-prep:path', '{bad');
-  assert.deepEqual(loadPath(s), { quiz: {}, exam: {} });
+  assert.deepEqual(loadPath(s), { quiz: {}, units: {}, exam: {} });
 });
 
 test('streaks count days in a row', () => {

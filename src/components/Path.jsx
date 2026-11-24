@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { DIVISIONS } from '../lib/are.js';
-import { loadLessons, lessonsFor } from '../lib/course/index.js';
+import { loadLessons, lessonsFor, unitsFor } from '../lib/course/index.js';
 import { isCorrect, isAnswered, answerText, score, dealChoices } from '../lib/questions.js';
 import ItemInput from './Item.jsx';
 import { loadMissed, saveMissed, updateMissed } from '../lib/missed.js';
 import { loadBest, recordBest, saveBest } from '../lib/scores.js';
-import { quizSet, examSet, examLength, loadRun, saveRun, clearRun, examSeconds, loadPath, savePath, recordQuiz, recordExam, lessonsDone, quizPassed, recordDay, QUIZ_PASS, QUIZ_SIZE, EXAM_PASS } from '../lib/path.js';
+import { quizSet, unitQuizSet, unitLessonsDone, recordUnit, currentUnit, examSet, examLength, loadRun, saveRun, clearRun, examSeconds, loadPath, savePath, recordQuiz, recordExam, lessonsDone, quizPassed, recordDay, QUIZ_PASS, QUIZ_SIZE, EXAM_PASS } from '../lib/path.js';
 import { Review } from './Practice.jsx';
 import { DivisionIcon } from './Home.jsx';
 
@@ -34,25 +34,29 @@ function Locked({ d, children }) {
 
 /** #quiz/pa: ten questions from the division's lessons, one at a time with the answer shown after each. */
 export function DivisionQuiz({ id }) {
-  const d = division(id);
+  const [divId, unitArg] = String(id || '').split('/');
+  const d = division(divId);
   const lessons = loadLessons();
+  const units = unitsFor(d.id);
+  const unit = Math.min(Math.max(0, (Number(unitArg) || (currentUnit(d.id, lessons, loadPath()) ?? 0) + 1) - 1), units.length - 1);
   const [seed, setSeed] = useState(Date.now);
-  const questions = useMemo(() => dealChoices(quizSet(d.id, seed), seed), [d.id, seed]);
+  const questions = useMemo(() => dealChoices(unitQuizSet(d.id, unit, seed), seed), [d.id, unit, seed]);
   const [i, setI] = useState(0);
   const [answers, setAnswers] = useState({});
   const [checked, setChecked] = useState(false);
   const [result, setResult] = useState(null);
 
-  if (!lessonsDone(d.id, lessons)) {
-    return <Locked d={d}>Finish all {lessonsFor(d.id).length} {d.code} lessons first. The quiz covers what they teach, so it unlocks when every lesson check is passed.</Locked>;
+  if (!unitLessonsDone(d.id, unit, lessons)) {
+    return <Locked d={d}>Finish the three lessons in unit {unit + 1} ({units[unit].lessons.map(l => l.title).join(', ')}) first. The quiz covers what they teach.</Locked>;
   }
 
   const finish = () => {
     const r = score(questions, answers);
     const before = loadPath();
-    savePath(recordQuiz(before, d.id, r.percent));
+    const after = recordUnit(before, d.id, unit, r.percent);
+    savePath(after);
     saveCommon(questions, answers);
-    setResult({ ...r, firstPass: r.percent >= QUIZ_PASS && !quizPassed(d.id, before) });
+    setResult({ ...r, unlocked: quizPassed(d.id, after) && !quizPassed(d.id, before) });
   };
   const again = () => { setSeed(Date.now()); setI(0); setAnswers({}); setChecked(false); setResult(null); };
 
@@ -60,13 +64,13 @@ export function DivisionQuiz({ id }) {
     const pass = result.percent >= QUIZ_PASS;
     return (
       <section className="card" aria-live="polite">
-        <p className="kicker-sm"><a href={`#learn/${d.id}`}>{d.code}</a> · Step 2 of 3 · Division quiz</p>
+        <p className="kicker-sm"><a href={`#learn/${d.id}`}>{d.code}</a> · Unit {unit + 1} quiz</p>
         <h2>{result.correct} of {result.total} right ({result.percent}%)</h2>
-        <p className={pass ? 'ok' : 'error'}>{pass ? `Quiz passed! ${result.firstPass ? 'The practice exam is unlocked. 🔓' : ''}` : `You need ${QUIZ_PASS}% to pass. Review the lessons for the questions you missed, then try a new set.`}</p>
+        <p className={pass ? 'ok' : 'error'}>{pass ? `Unit ${unit + 1} quiz passed! ${result.unlocked ? 'Every unit is done, so the practice exam is unlocked. 🔓' : unit + 1 < units.length ? `On to unit ${unit + 2}.` : ''}` : `You need ${QUIZ_PASS}% to pass. Review the lessons for the questions you missed, then try a new set.`}</p>
         <Review questions={questions} answers={answers} />
         <div className="row">
           <button onClick={again}>New quiz</button>
-          {pass ? <a className="button primary" href={`#exam/${d.id}`}>Take the {d.code} practice exam</a>
+          {pass ? (result.unlocked || quizPassed(d.id, loadPath()) ? <a className="button primary" href={`#exam/${d.id}`}>Take the {d.code} practice exam</a> : <a className="button primary" href={`#learn/${d.id}`}>Continue the course</a>)
             : <a className="button primary" href={`#learn/${d.id}`}>Back to the lessons</a>}
         </div>
       </section>
@@ -78,7 +82,7 @@ export function DivisionQuiz({ id }) {
   const ok = isCorrect(q, picked);
   return (
     <section className="card question">
-      <p className="kicker-sm"><a href={`#learn/${d.id}`}>{d.code}</a> · Step 2 of 3 · Division quiz · pass with {QUIZ_PASS}%</p>
+      <p className="kicker-sm"><a href={`#learn/${d.id}`}>{d.code}</a> · Unit {unit + 1} quiz · pass with {QUIZ_PASS}%</p>
       <div className="quiz-dots" aria-hidden="true">{questions.map((x, k) => <span key={x.id} className={k < i ? (isCorrect(x, answers[x.id] || []) ? 'right' : 'wrong') : k === i ? 'now' : ''} />)}</div>
       <p className="muted">Question {i + 1} of {questions.length} · {q.section}</p>
       <h3>{q.prompt}</h3>
@@ -104,7 +108,7 @@ export function PracticeExam({ id }) {
   const [, refresh] = useState(0);
   const saved = loadRun(d.id);
   if (!quizPassed(d.id, path)) {
-    return <Locked d={d}>Pass the {d.code} division quiz first ({QUIZ_PASS}% or better). The practice exam unlocks after it.</Locked>;
+    return <Locked d={d}>Pass all {unitsFor(d.id).length} {d.code} unit quizzes first ({QUIZ_PASS}% or better). The practice exam unlocks after the last one.</Locked>;
   }
   if (run) return <ExamRun d={d} {...run} onExit={() => setRun(null)} />;
 

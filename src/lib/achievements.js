@@ -4,9 +4,9 @@
 import { DIVISIONS } from './are.js';
 import { LESSONS, lessonsFor, finished } from './course/index.js';
 import { CARDS } from './flashcards.js';
-import { quizPassed, examPassed, lessonsDone, steps, streak, bestStreak, QUIZ_PASS, EXAM_PASS } from './path.js';
+import { quizPassed, examPassed, lessonsDone, steps, streak, bestStreak, unitsPassed, QUIZ_PASS, EXAM_PASS } from './path.js';
 
-export const POINTS = { lesson: 20, quiz: 50, exam: 100, card: 2 };
+export const POINTS = { lesson: 20, quiz: 25, exam: 100, card: 2 };
 
 // Streak badges, from three days to six months (a month counted as 30 days).
 export const STREAKS = [
@@ -21,7 +21,7 @@ export const STREAKS = [
  */
 export function points({ lessons, path, known }) {
   const done = LESSONS.filter(l => finished(lessons, l.id)).length;
-  const quizzes = DIVISIONS.filter(d => quizPassed(d.id, path)).length;
+  const quizzes = DIVISIONS.reduce((n, d) => n + unitsPassed(d.id, path), 0);
   const exams = DIVISIONS.filter(d => examPassed(d.id, path)).length;
   return done * POINTS.lesson + quizzes * POINTS.quiz + exams * POINTS.exam + known.length * POINTS.card;
 }
@@ -47,7 +47,7 @@ export function divisionBadges({ lessons, path }) {
     const s = steps(d.id, lessons, path);
     return {
       id: `div-${d.id}`, division: d.id, name: d.code, title: d.name,
-      desc: `Finish all ${lessonsFor(d.id).length} ${d.code} lessons, pass the quiz and pass the practice exam.`,
+      desc: `Finish all ${lessonsFor(d.id).length} ${d.code} lessons, pass the four unit quizzes and pass the practice exam.`,
       have: s.done, target: s.total, earned: lessonsDone(d.id, lessons) && quizPassed(d.id, path) && examPassed(d.id, path),
     };
   });
@@ -57,14 +57,14 @@ export function milestoneBadges({ lessons, path, known, best, passed, days, toda
   const done = LESSONS.filter(l => finished(lessons, l.id)).length;
   const run = Math.max(streak(days, today), bestStreak(days));
   const perfectCheck = Object.values(lessons).some(v => v === 100);
-  const perfectQuiz = Object.values(path.quiz).some(v => v === 100);
+  const perfectQuiz = Object.values(path.quiz).some(v => v === 100) || Object.values(path.units || {}).some(row => row.some(v => v === 100));
   const timedPass = Object.values(path.exam).some(e => e.timed);
   const yes = ok => ({ have: ok ? 1 : 0, target: 1 });
   return [
     { id: 'first-lesson', icon: '📖', name: 'First lesson', desc: 'Finish a lesson by passing its check.', ...count(done, 1) },
     { id: 'perfect-check', icon: '✔️', name: 'Spotless check', desc: 'Score 100% on a lesson check.', ...yes(perfectCheck) },
-    { id: 'first-quiz', icon: '📝', name: 'Quiz passed', desc: `Pass a division quiz (${QUIZ_PASS}% or better).`, ...count(DIVISIONS.filter(d => quizPassed(d.id, path)).length, 1) },
-    { id: 'perfect-quiz', icon: '💯', name: 'Perfect quiz', desc: 'Score 100% on a division quiz.', ...yes(perfectQuiz) },
+    { id: 'first-quiz', icon: '📝', name: 'Quiz passed', desc: `Pass a unit quiz (${QUIZ_PASS}% or better).`, ...count(DIVISIONS.reduce((n, d) => n + unitsPassed(d.id, path), 0) + DIVISIONS.filter(d => (path.quiz[d.id] ?? -1) >= QUIZ_PASS).length, 1) },
+    { id: 'perfect-quiz', icon: '💯', name: 'Perfect quiz', desc: 'Score 100% on a unit quiz.', ...yes(perfectQuiz) },
     { id: 'first-exam', icon: '🎓', name: 'Practice exam passed', desc: `Pass a practice exam (${EXAM_PASS}% or better).`, ...count(DIVISIONS.filter(d => examPassed(d.id, path)).length, 1) },
     { id: 'beat-clock', icon: '⏱️', name: 'Beat the clock', desc: 'Pass a practice exam with the timer on.', ...yes(timedPass) },
     { id: 'mixed', icon: '🔀', name: 'All-rounder', desc: 'Score 80% or better on a 20-question mixed test.', ...yes((best.mixed?.percent ?? 0) >= 80) },
