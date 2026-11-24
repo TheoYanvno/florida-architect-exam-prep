@@ -53,7 +53,7 @@ export function divisionBadges({ lessons, path }) {
   });
 }
 
-export function milestoneBadges({ lessons, path, known, best, passed, days, today }) {
+export function milestoneBadges({ lessons, path, known, best, passed, days, today, cardQuiz = {} }) {
   const done = LESSONS.filter(l => finished(lessons, l.id)).length;
   const run = Math.max(streak(days, today), bestStreak(days));
   const perfectCheck = Object.values(lessons).some(v => v === 100);
@@ -69,6 +69,8 @@ export function milestoneBadges({ lessons, path, known, best, passed, days, toda
     { id: 'beat-clock', icon: '⏱️', name: 'Beat the clock', desc: 'Pass a practice exam with the timer on.', ...yes(timedPass) },
     { id: 'mixed', icon: '🔀', name: 'All-rounder', desc: 'Score 80% or better on a 20-question mixed test.', ...yes((best.mixed?.percent ?? 0) >= 80) },
     { id: 'cards-100', icon: '🗂️', name: 'Term collector', desc: 'Mark 100 flashcards "Got it".', ...count(known.length, 100) },
+    { id: 'card-quiz-70', icon: '🃏', name: 'Card sharp', desc: 'Score 70% or better on a flashcard quiz.', ...yes(Object.values(cardQuiz).some(v => v >= 70)) },
+    { id: 'card-quiz-100', icon: '🎯', name: 'Total recall', desc: 'Get every term right on a flashcard quiz.', ...yes(Object.values(cardQuiz).some(v => v === 100)) },
     { id: 'cards-all', icon: '🧠', name: 'Every term', desc: `Mark all ${CARDS.length} flashcards "Got it".`, ...count(known.length, CARDS.length) },
     { id: 'halfway', icon: '⛰️', name: 'Halfway there', desc: 'Finish 3 of the 6 divisions: every lesson, the quiz and the practice exam.', ...count(DIVISIONS.filter(d => lessonsDone(d.id, lessons) && quizPassed(d.id, path) && examPassed(d.id, path)).length, 3) },
     ...STREAKS.map(([days, icon, name]) => ({ id: `streak-${days}`, icon, name, desc: `Study ${days} days in a row.`, ...count(run, days) })),

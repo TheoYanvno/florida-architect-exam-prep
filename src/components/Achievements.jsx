@@ -1,5 +1,5 @@
 import { loadLessons } from '../lib/course/index.js';
-import { loadKnown } from '../lib/flashcards.js';
+import { loadKnown, loadCardQuiz } from '../lib/flashcards.js';
 import { loadBest } from '../lib/scores.js';
 import { loadPassed } from '../lib/progress.js';
 import { loadPath, loadDays, today, streak } from '../lib/path.js';
@@ -9,7 +9,7 @@ import { DivisionIcon } from './Home.jsx';
 /** Everything the achievements are worked out from, read from the browser. */
 export const loadState = () => ({
   lessons: loadLessons(), path: loadPath(), known: loadKnown(), best: loadBest(),
-  passed: loadPassed(), days: loadDays(), today: today(),
+  passed: loadPassed(), days: loadDays(), today: today(), cardQuiz: loadCardQuiz(),
 });
 
 const Progress = ({ have, target }) => (

@@ -184,3 +184,9 @@ button.link { background:none; border:0; padding:0; color:var(--accent); text-de
 .award.earned .award-icon { filter:none; opacity:1; background:var(--orange-soft); color:var(--navy); }
 .award .bar { margin-top:4px; }
 .earned-tag { align-self:flex-start; padding:2px 10px; border-radius:999px; background:rgb(17 128 74 / .15); color:var(--good); font-size:.8rem; font-weight:700; }
+
+/* Flashcard modes */
+.tabs { display:inline-flex; gap:4px; padding:4px; margin:4px 0 8px; border-radius:12px; background:var(--track); }
+.tabs button { border:0; background:transparent; border-radius:9px; padding:8px 14px; font-weight:600; color:var(--muted); }
+.tabs button.on { background:var(--panel); color:var(--text); box-shadow:var(--shadow); }
+.choice:disabled { opacity:1; cursor:default; }

@@ -4,7 +4,7 @@ A study app for the architect registration exam (ARE® 5.0) and the path to an a
 
 **Live app:** [theoyanvno.github.io/florida-architect-exam-prep](https://theoyanvno.github.io/florida-architect-exam-prep/)
 
-**Status:** finished. Each of the six divisions is a full path of lessons, a quiz and a practice exam, with 216 questions, 300 flashcards and 30 achievements, and it installs on iPhone and Android.
+**Status:** finished. Each of the six divisions is a full path of lessons, a quiz and a practice exam, with 216 questions, 300 flashcards and 32 achievements, and it installs on iPhone and Android.
 
 ## Screenshots
 
@@ -34,7 +34,7 @@ Like CodeForge, each division is a path in three steps:
 2. **Division quiz.** Unlocks when every lesson is finished: 10 questions on what the lessons taught, with the answer and explanation after each one. Pass with 75%.
 3. **Practice exam.** Unlocks when the quiz is passed: every question for the division, including 10 you won't have seen in a lesson or quiz. As on the real exam, you don't see answers until you submit, and you can flag questions and jump between them. The timer keeps the real division's pace. Pass with 70%; results are broken down by NCARB section.
 
-Pass all three to earn the division's badge. **Achievements** award points (20 per lesson, 50 per quiz, 100 per exam, 2 per flashcard). There are three levels (Candidate, Course graduate, Exam ready), a badge for each division and 21 milestones, among them Perfect quiz, Beat the clock, Halfway there (3 divisions finished) and streaks from 3 days up to six months. Free practice and flashcards stay open at any time.
+Pass all three to earn the division's badge. **Achievements** award points (20 per lesson, 50 per quiz, 100 per exam, 2 per flashcard). There are three levels (Candidate, Course graduate, Exam ready), a badge for each division and 23 milestones, among them Perfect quiz, Beat the clock, Halfway there (3 divisions finished), Card sharp and Total recall (70% and 100% on a flashcard quiz) and streaks from 3 days up to six months. Free practice and flashcards stay open at any time.
 
 ## What it covers
 
@@ -49,7 +49,7 @@ Pass all three to earn the division's badge. **Achievements** award points (20 p
 - 216 original questions (the lesson checks, 48 practice questions and 60 exam questions), one division at a time or a 20-question mixed test, with an optional timer at the exam's pace, explanations, a score by NCARB section and your best score saved
 - Answer choices shuffled every session, a review of every question you missed, and a Missed list to practice until you get them right
 - A Campus & career page of help around the University of Florida campus: the School of Architecture, IPAL at the UF CityLabs, the Architecture & Fine Arts Library and its databases, UF AIAS, NOMAS and Alpha Rho Chi, the Career Connections Center for AXP jobs, and AIA Florida's ARE Scholarship (up to two ARE seat credits) and the free AIA PrepARE Exam Readiness Pack for eligible Associate AIA members
-- 300 flashcards of key terms (50 per division) with Got it and Again, saved in the browser
+- 300 flashcards of key terms (50 per division) with Got it and Again, saved in the browser, and a flashcard quiz mode: see a definition, pick the matching term from four, ten at a time, with your best score saved
 
 Every fact links to its source (NCARB, the Florida DBPR board pages and the University of Florida School of Architecture). Practice questions are written for this app; nothing is copied from NCARB or prep companies.
 
