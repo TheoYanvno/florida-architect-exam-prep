@@ -1,13 +1,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
 import { readiness, summary, togglePassed, greeting, loadPassed, savePassed, loadName, saveName } from '../src/lib/progress.js';
+import { lessonsFor, PASS_MARK } from '../src/lib/course/index.js';
+const allDone = (div) => Object.fromEntries(lessonsFor(div).map(l => [l.id, PASS_MARK]));
 
 const store = () => { const m = new Map(); return { getItem: k => m.get(k) ?? null, setItem: (k, v) => m.set(k, String(v)) }; };
 
-test('readiness is 100 once passed, otherwise the best practice score', () => {
-  assert.strictEqual(readiness('pa', { pa: { percent: 62, total: 8 } }, []), 62);
+test('readiness is 100 once passed, otherwise 40% lessons and 60% best practice score', () => {
+  assert.strictEqual(readiness('pa', { pa: { percent: 60, total: 8 } }, []), 36);
+  assert.strictEqual(readiness('pa', { pa: { percent: 60, total: 8 } }, [], allDone('pa')), 76);
   assert.strictEqual(readiness('pa', { pa: { percent: 62, total: 8 } }, ['pa']), 100);
-  assert.strictEqual(readiness('ce', {}, []), 0);
+  assert.strictEqual(readiness('pa', {}, [], allDone('pa')), 40);
 });
 
 test('the study card numbers', () => {
@@ -16,7 +19,7 @@ test('the study card numbers', () => {
   assert.strictEqual(s.left, 5);
   assert.strictEqual(s.inProgress, 2);
   assert.strictEqual(s.average, 63);
-  assert.strictEqual(s.overall, Math.round((75 + 50 + 100) / 6));
+  assert.strictEqual(s.overall, Math.round((Math.round(0.6 * 75) + Math.round(0.6 * 50) + 100) / 6));
   assert.strictEqual(s.daysToGoal, 128);
   assert.strictEqual(summary({}, [], '2020-01-01', '2026-11-24').daysToGoal, 0);
   assert.strictEqual(summary({}, [], '2027-01-01', '2026-11-24').average, null);
