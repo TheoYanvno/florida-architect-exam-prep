@@ -2,6 +2,7 @@ import { loadBest } from '../lib/scores.js';
 import { loadDates } from '../lib/dates.js';
 import { loadPassed, loadName, summary, greeting } from '../lib/progress.js';
 import { loadLessons } from '../lib/course/index.js';
+import { LevelCard } from './Achievements.jsx';
 
 // Line icons for the six divisions, drawn for this app.
 const DIV_ICONS = {
@@ -17,7 +18,7 @@ export const DivisionIcon = ({ id, size = 34 }) => (
 );
 
 const TOOLS = [
-  ['#learn', 'Lessons', 'Learn each division section by section, then check yourself',
+  ['#learn', 'Course', 'Lessons, a quiz and a practice exam for each division',
     <path d="M12 4 2.5 8.5 12 13l9.5-4.5zM6 10.5v4.5c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5M21.5 8.5V14" />],
   ['#practice', 'Practice Questions', 'Exam-style questions with explanations',
     <><rect x="5" y="4.5" width="14" height="16" rx="2" /><path d="M9 4.5V3h6v1.5M8 10l1.2 1.2L11.5 9M13 10.5h3M8 15l1.2 1.2L11.5 14M13 15.5h3" /></>],
@@ -75,8 +76,10 @@ export default function Home() {
           <span><svg viewBox="0 0 24 24" className="icon" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14.5" rx="2" /><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4" /></svg><b>{s.daysToGoal}</b> Days to goal</span>
           <span><svg viewBox="0 0 24 24" className="icon" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><circle cx="12" cy="12" r="4.5" /><circle cx="12" cy="12" r="1" /></svg><b>{s.left}</b> Divisions left</span>
           <span><svg viewBox="0 0 24 24" className="icon" aria-hidden="true"><path d="M5 20V12M10 20V8M15 20V11M20 20V5M3 20h18" /></svg><b>{s.average === null ? '–' : `${s.average}%`}</b> Practice avg.</span>
-          </div>
+        </div>
       </a>
+
+      <LevelCard />
 
       <div className="section-head"><h2>Exam Divisions</h2><a href="#divisions">View all →</a></div>
       <div className="div-grid">

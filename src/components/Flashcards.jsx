@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { DIVISIONS } from '../lib/are.js';
 import { cardsFor, loadKnown, saveKnown, markCard, deck } from '../lib/flashcards.js';
+import { recordDay } from '../lib/path.js';
 
 // Flashcards: key terms for a division. Tap the card to see the definition, then mark it Got it (it leaves
 // the pile) or Again (it comes back). Known cards are saved in the browser.
@@ -19,7 +20,7 @@ export default function Flashcards() {
   }
   function answer(gotIt) {
     const next = markCard(known, card.id, gotIt);
-    setKnown(next); saveKnown(next); setFlipped(false);
+    setKnown(next); saveKnown(next); recordDay(); setFlipped(false);
     if (i + 1 < pile.length) setI(i + 1);
     else { setPile(deck(division, next)); setI(0); }
   }

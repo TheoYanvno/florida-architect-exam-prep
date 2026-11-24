@@ -1,6 +1,6 @@
 // Keeps the app working offline once it is on your home screen: the app's own files are saved on the
 // first visit and served from the phone after that, while a fresh copy is fetched in the background.
-const CACHE = 'license-study-v1';
+const CACHE = 'license-study-v2';
 const FILES = ['./', 'index.html', 'app.js', 'styles.css', 'icon.svg', 'manifest.webmanifest',
   'img/hero.svg', 'img/hub.svg', 'img/icon-180.png', 'img/icon-192.png', 'img/icon-512.png'];
 

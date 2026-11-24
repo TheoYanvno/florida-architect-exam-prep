@@ -3,6 +3,7 @@ import { DIVISIONS } from '../lib/are.js';
 import { questionsFor, isCorrect, score, shuffled, mixedSet, dealChoices } from '../lib/questions.js';
 import { loadMissed, saveMissed, updateMissed, missedSet } from '../lib/missed.js';
 import { loadBest, recordBest, saveBest } from '../lib/scores.js';
+import { recordDay } from '../lib/path.js';
 
 // Practice: pick a division, answer its questions one at a time (with an optional timer at the ARE's
 // pace), check each answer with its explanation, then see the score by NCARB section.
@@ -25,6 +26,7 @@ export default function Practice({ initialDivision }) {
   function finish(division, result, questions, answers) {
     const ids = updateMissed(missed, questions, answers);
     setMissed(ids); saveMissed(ids);
+    recordDay();
     if (division.id === 'missed') return false;          // reviewing misses doesn't set a best score
     const next = recordBest(best, division.id, result);
     if (next.isNew) { setBest(next.best); saveBest(next.best); }
@@ -128,7 +130,7 @@ function Session({ division, questions, timed, onDone, onFinish }) {
 
 // After a session: every question you missed, what you picked, the right answer and why. These are saved
 // to the Missed list so you can practice them again.
-function Review({ questions, answers }) {
+export function Review({ questions, answers }) {
   const wrong = questions.filter(q => !isCorrect(q, answers[q.id] || []));
   if (!wrong.length) return <p className="ok">You got every question right.</p>;
   const letters = idx => idx.map(n => String.fromCharCode(65 + n)).join(', ');

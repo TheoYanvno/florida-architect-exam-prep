@@ -1,29 +1,30 @@
 import { useMemo, useState } from 'react';
 import { DIVISIONS } from '../lib/are.js';
-import { lessonsFor, lessonById, loadLessons, saveLessons, recordLesson, finished, lessonPercent, PASS_MARK } from '../lib/course/index.js';
+import { lessonsFor, lessonById, loadLessons, saveLessons, recordLesson, finished, PASS_MARK } from '../lib/course/index.js';
 import { isCorrect, dealChoices } from '../lib/questions.js';
 import { DivisionIcon } from './Home.jsx';
+import { loadPath, stage, steps, recordDay, quizPassed, examPassed, lessonsDone, QUIZ_PASS, QUIZ_SIZE, EXAM_PASS } from '../lib/path.js';
 
 /** #learn: the six divisions and how far through each course you are. */
 export function CourseHome() {
   const done = loadLessons();
+  const path = loadPath();
   return (
     <>
       <section className="card">
         <h2>The course</h2>
-        <p>Work through each division one lesson at a time. Every lesson teaches one of NCARB’s content sections, works examples where numbers matter, and ends with a short check. Pass the check ({PASS_MARK}% or better) to finish the lesson, then test yourself with the division’s practice questions.</p>
+        <p>Each division is a path in three steps. <b>1. Lessons:</b> each one teaches one of NCARB’s content sections and ends with a short check ({PASS_MARK}% to finish it). <b>2. Division quiz:</b> {QUIZ_SIZE} questions on everything the lessons taught ({QUIZ_PASS}% to pass). <b>3. Practice exam:</b> every question for the division, timed at the real exam’s pace, with no answers until you submit ({EXAM_PASS}% to pass). Pass all three to earn the division’s badge.</p>
         <p className="muted small">Suggested order: PA, PPD, PDD, CE, PjM, PcM. Written for this app; not NCARB material.</p>
       </section>
       <div className="course-grid">
         {DIVISIONS.map(d => {
-          const n = lessonsFor(d.id).length;
-          const pct = lessonPercent(d.id, done);
-          const fin = lessonsFor(d.id).filter(l => finished(done, l.id)).length;
+          const s = steps(d.id, done, path);
+          const at = stage(d.id, done, path);
           return (
             <a key={d.id} className="card course-div" href={`#learn/${d.id}`}>
               <span className="div-top"><DivisionIcon id={d.id} /><span><b>{d.code}</b><small>{d.name}</small></span></span>
-              <span className="muted small">{fin} of {n} lessons finished</span>
-              <span className="bar"><span style={{ width: `${pct}%` }} /></span>
+              <span className="muted small">{at === 'done' ? '🏅 Badge earned' : at === 'lessons' ? `Step 1: lessons · ${s.done} of ${s.total} steps` : at === 'quiz' ? 'Step 2: division quiz' : 'Step 3: practice exam'}</span>
+              <span className="bar"><span style={{ width: `${(s.done / s.total) * 100}%` }} /></span>
             </a>
           );
         })}
@@ -38,6 +39,8 @@ export function DivisionCourse({ id }) {
   const done = loadLessons();
   const lessons = lessonsFor(d.id);
   const next = lessons.find(l => !finished(done, l.id));
+  const path = loadPath();
+  const at = stage(d.id, done, path);
   return (
     <>
       <section className="card">
@@ -45,8 +48,11 @@ export function DivisionCourse({ id }) {
         <p className="muted">{d.items} exam items · {lessons.length} lessons · {lessons.reduce((n, l) => n + l.minutes, 0)} minutes of reading</p>
         {!lessons.length ? <p>Lessons for {d.code} are on the way. Until then, use the practice questions and flashcards.</p>
           : next ? <a className="button primary" href={`#lesson/${next.id}`}>{lessons.some(l => finished(done, l.id)) ? 'Continue' : 'Start'}: {next.title}</a>
-          : <a className="button primary" href={`#practice/${d.id}`}>Every lesson finished. Take the {d.code} practice test</a>}
+          : at === 'quiz' ? <a className="button primary" href={`#quiz/${d.id}`}>Every lesson finished. Take the {d.code} quiz</a>
+          : at === 'exam' ? <a className="button primary" href={`#exam/${d.id}`}>Quiz passed. Take the {d.code} practice exam</a>
+          : <a className="button primary" href="#achievements">🏅 {d.code} badge earned. See your achievements</a>}
       </section>
+      <h3 className="step-h"><span className={`step-num${lessonsDone(d.id, done) ? ' done' : ''}`}>{lessonsDone(d.id, done) ? '✓' : 1}</span> Lessons</h3>
       <ol className="lesson-list">
         {lessons.map((l, i) => (
           <li key={l.id}>
@@ -58,7 +64,19 @@ export function DivisionCourse({ id }) {
           </li>
         ))}
       </ol>
-      <p><a href={`#practice/${d.id}`}>Practice questions for {d.code} ›</a> &nbsp; <a href="#cards">Flashcards ›</a></p>
+      <h3 className="step-h"><span className={`step-num${quizPassed(d.id, path) ? ' done' : ''}`}>{quizPassed(d.id, path) ? '✓' : 2}</span> Division quiz</h3>
+      <a className={`card lesson-row${quizPassed(d.id, path) ? ' done' : ''}${lessonsDone(d.id, done) ? '' : ' locked'}`} href={`#quiz/${d.id}`}>
+        <span className="lesson-num" aria-hidden="true">{lessonsDone(d.id, done) ? '📝' : '🔒'}</span>
+        <span><b>{d.code} quiz</b><small>{QUIZ_SIZE} questions · pass with {QUIZ_PASS}%{path.quiz[d.id] !== undefined ? ` · best ${path.quiz[d.id]}%` : lessonsDone(d.id, done) ? '' : ' · unlocks after the lessons'}</small></span>
+        <span className="chev" aria-hidden="true">›</span>
+      </a>
+      <h3 className="step-h"><span className={`step-num${examPassed(d.id, path) ? ' done' : ''}`}>{examPassed(d.id, path) ? '✓' : 3}</span> Practice exam</h3>
+      <a className={`card lesson-row${examPassed(d.id, path) ? ' done' : ''}${quizPassed(d.id, path) ? '' : ' locked'}`} href={`#exam/${d.id}`}>
+        <span className="lesson-num" aria-hidden="true">{quizPassed(d.id, path) ? '🎓' : '🔒'}</span>
+        <span><b>{d.code} practice exam</b><small>Timed at the real pace · pass with {EXAM_PASS}%{path.exam[d.id] ? ` · best ${path.exam[d.id].percent}%` : quizPassed(d.id, path) ? '' : ' · unlocks after the quiz'}</small></span>
+        <span className="chev" aria-hidden="true">›</span>
+      </a>
+      <p className="muted small">Want extra practice at any time? <a href={`#practice/${d.id}`}>Free practice questions for {d.code} ›</a> &nbsp; <a href="#cards">Flashcards ›</a></p>
     </>
   );
 }
@@ -119,6 +137,7 @@ function Check({ lesson, next }) {
     const percent = Math.round((right / questions.length) * 100);
     const next = recordLesson(loadLessons(), lesson.id, percent);
     saveLessons(next);
+    recordDay();
     setResult({ right, percent });
   };
   const again = () => { setPicked({}); setResult(null); };
@@ -150,7 +169,7 @@ function Check({ lesson, next }) {
           <div className="row">
             <button onClick={again}>Try again</button>
             {next ? <a className="button primary" href={`#lesson/${next.id}`}>Next lesson: {next.title}</a>
-              : <a className="button primary" href={`#practice/${lesson.division}`}>Take the practice test</a>}
+              : <a className="button primary" href={`#quiz/${lesson.division}`}>Last lesson done. On to the division quiz</a>}
           </div>
         </div>
       )}

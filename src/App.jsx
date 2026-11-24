@@ -8,6 +8,8 @@ import Flashcards from './components/Flashcards.jsx';
 import Home, { DivisionIcon } from './components/Home.jsx';
 import { Progress, Profile } from './components/Progress.jsx';
 import { CourseHome, DivisionCourse, Lesson } from './components/Course.jsx';
+import { DivisionQuiz, PracticeExam } from './components/Path.jsx';
+import Achievements from './components/Achievements.jsx';
 import { loadBest } from './lib/scores.js';
 import { loadDates, saveDates } from './lib/dates.js';
 
@@ -16,6 +18,9 @@ const PAGES = {
   home: { title: 'Home' },
   learn: { title: 'Course' },
   lesson: { title: 'Lesson' },
+  quiz: { title: 'Division quiz' },
+  exam: { title: 'Practice exam' },
+  achievements: { title: 'Achievements' },
   plan: { title: 'Study plan' },
   divisions: { title: 'Exam divisions' },
   progress: { title: 'Progress' },
@@ -25,11 +30,12 @@ const PAGES = {
   florida: { title: 'Florida license' },
   campus: { title: 'Campus & career' },
 };
-const NAV = [['home', 'Home', 'home'], ['learn', 'Study', 'book'], ['divisions', 'Divisions', 'layers'], ['progress', 'Progress', 'bars'], ['profile', 'Profile', 'user']];
+const NAV = [['home', 'Home', 'home'], ['learn', 'Study', 'book'], ['achievements', 'Awards', 'trophy'], ['progress', 'Progress', 'bars'], ['profile', 'Profile', 'user']];
 const ICONS = {
   home: <path d="M4 11.5 12 5l8 6.5V20h-5.5v-5h-5v5H4z" />,
   book: <path d="M3 6.5c3-1.4 6-1.4 9 .5 3-1.9 6-1.9 9-.5V19c-3-1.4-6-1.4-9 .5-3-1.9-6-1.9-9-.5zM12 7v12.5" />,
   layers: <path d="m12 4 9 4.5-9 4.5-9-4.5zM3 12.5l9 4.5 9-4.5M3 16.5l9 4.5 9-4.5" />,
+  trophy: <path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7M9.5 17h5v3h-5z" />,
   bars: <path d="M5 20V12M10 20V8M15 20V11M20 20V5M3 20h18" />,
   user: <><circle cx="12" cy="8.5" r="3.8" /><path d="M4.5 20c.8-4 3.8-6 7.5-6s6.7 2 7.5 6" /></>,
   menu: <path d="M4 7h16M4 12h16M4 17h16" />,
@@ -53,7 +59,7 @@ export default function App() {
   const go = (to) => { location.hash = to; };
   const practice = id => go(`practice/${id}`);
   const home = page === 'home';
-  const active = page === 'lesson' ? 'learn' : ['practice', 'cards', 'florida', 'campus', 'plan'].includes(page) ? 'home' : page;
+  const active = ['lesson', 'quiz', 'exam'].includes(page) ? 'learn' : ['practice', 'cards', 'florida', 'campus', 'plan', 'divisions'].includes(page) ? 'home' : page;
 
   return (
     <div className={`app${home ? ' is-home' : ''}`}>
@@ -66,12 +72,12 @@ export default function App() {
         <div className="drawer-back" onClick={() => setMenu(false)}>
           <nav className="drawer" aria-label="All pages" onClick={e => e.stopPropagation()}>
             <p className="drawer-brand"><img src="icon.svg" alt="" width="36" height="36" /> Architecture License Study</p>
-            {Object.entries(PAGES).filter(([id]) => id !== 'lesson').map(([id, p]) => <a key={id} href={`#${id}`} aria-current={id === page ? 'page' : undefined}>{p.title}</a>)}
+            {Object.entries(PAGES).filter(([id]) => !['lesson', 'quiz', 'exam'].includes(id)).map(([id, p]) => <a key={id} href={`#${id}`} aria-current={id === page ? 'page' : undefined}>{p.title}</a>)}
           </nav>
         </div>
       )}
       <main>
-        {page === 'home' ? <Home /> : page === 'learn' ? (arg ? <DivisionCourse id={arg} /> : <CourseHome />) : page === 'lesson' ? <Lesson key={arg} id={arg} /> : page === 'plan' ? <Plan onPractice={practice} /> : page === 'divisions' ? <Divisions onPractice={practice} />
+        {page === 'home' ? <Home /> : page === 'learn' ? (arg ? <DivisionCourse id={arg} /> : <CourseHome />) : page === 'lesson' ? <Lesson key={arg} id={arg} /> : page === 'quiz' ? <DivisionQuiz key={arg} id={arg} /> : page === 'exam' ? <PracticeExam key={arg} id={arg} /> : page === 'achievements' ? <Achievements /> : page === 'plan' ? <Plan onPractice={practice} /> : page === 'divisions' ? <Divisions onPractice={practice} />
           : page === 'practice' ? <Practice key={arg || 'none'} initialDivision={arg} /> : page === 'cards' ? <Flashcards />
           : page === 'progress' ? <Progress /> : page === 'profile' ? <Profile /> : page === 'campus' ? <Campus /> : <Florida />}
         <footer>

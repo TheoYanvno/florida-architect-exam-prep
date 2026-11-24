@@ -3,6 +3,7 @@
 // Types: 'single' (pick one) and 'multi' (pick all that apply), the two most common ARE item types.
 
 import { LESSON_QUESTIONS } from './course/index.js';
+import { EXAM_QUESTIONS } from './exam-questions.js';
 
 const BASE = [
   {
@@ -305,7 +306,7 @@ const BASE = [
 ];
 
 // The practice pool: the original practice set plus every lesson's check questions.
-export const QUESTIONS = [...BASE, ...LESSON_QUESTIONS];
+export const QUESTIONS = [...BASE, ...LESSON_QUESTIONS, ...EXAM_QUESTIONS];
 
 export function questionsFor(division) {
   return QUESTIONS.filter(q => q.division === division);
