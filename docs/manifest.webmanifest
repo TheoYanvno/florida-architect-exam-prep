@@ -1,0 +1,16 @@
+{
+  "name": "Architecture License Study",
+  "short_name": "License Study",
+  "description": "Study for the architect registration exam and track your path to a Florida architect license.",
+  "start_url": "./#home",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a2350",
+  "theme_color": "#0a2350",
+  "icons": [
+    { "src": "img/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "img/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

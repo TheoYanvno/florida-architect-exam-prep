@@ -1,28 +1,36 @@
-# 📐 Florida Architect Exam Prep
+# 📐 Florida Architect Exam Prep (Architecture License Study)
 
-A study web app for the Architect Registration Examination (ARE 5.0) and the path to an architect license in Florida, written for University of Florida architecture students and recent graduates who want to pass every division on the first try.
+A study app for the architect registration exam (ARE® 5.0) and the path to an architect license in Florida, written for architecture students and recent graduates in Gainesville who want to pass every division on the first try. It installs on an iPhone like an app and works offline.
 
 **Live app:** https://theoyanvno.github.io/florida-architect-exam-prep/
 
 ## Screenshots
 
-| ARE divisions | Study plan |
-|---|---|
-| ![The six ARE divisions with item counts, times and your best score](screenshots/divisions.png) | ![A study plan spread between start and goal dates](screenshots/plan.png) |
-| **Practice** | **Flashcards** |
-| ![A practice question with shuffled answer choices](screenshots/practice.png) | ![A flashcard of a key term](screenshots/flashcards.png) |
-| **At UF** | **On a phone** |
-| ![Campus resources at the University of Florida](screenshots/at-uf.png) | <img src="screenshots/phone.png" alt="The At UF page on a phone" width="260"> |
+| Home | Study plan | Practice |
+|---|---|---|
+| <img src="screenshots/home.png" alt="Home: overall progress ring, days to goal, the six divisions and study tools" width="240"> | <img src="screenshots/plan.png" alt="A study plan spread between start and goal dates" width="240"> | <img src="screenshots/practice.png" alt="Choosing a practice set" width="240"> |
+| **Flashcards** | **Progress** | **Campus & career** |
+| <img src="screenshots/flashcards.png" alt="A flashcard of a key term" width="240"> | <img src="screenshots/progress.png" alt="Readiness for each division with a Passed switch" width="240"> | <img src="screenshots/campus.png" alt="Campus and career resources" width="240"> |
+
+## Put it on your iPhone
+
+1. Open the live app in **Safari**.
+2. Tap **Share** (the square with an arrow pointing up).
+3. Tap **Add to Home Screen**, then **Add**.
+
+It opens full screen from its own icon, keeps your progress on the phone, and works without a connection after the first visit. On Android, use Chrome's menu and **Install app**.
 
 ## What it covers
 
+- A home screen with your overall progress, days to your goal date, divisions left and your practice average, a card for each division with your readiness, and the study tools
+- A Progress page to mark divisions passed, and a Profile page for your name, your dates and installing on iPhone
 - The six ARE 5.0 divisions with NCARB's item counts, test times and section weights
 - The AXP experience hours by area
 - A Florida licensing checklist from the Florida Board of Architecture and Interior Design
 - A study plan that spreads the six divisions between your start and goal dates, saved in the browser
 - 48 original practice questions (8 per division), one division at a time or a 20-question mixed test, with an optional timer at the exam's pace, explanations, a score by NCARB section and your best score saved
 - Answer choices shuffled every session, a review of every question you missed, and a Missed list to practice until you get them right
-- An At UF page of campus help: the School of Architecture, IPAL at the UF CityLabs, the Architecture & Fine Arts Library and its databases, UF AIAS, NOMAS and Alpha Rho Chi, the Career Connections Center for AXP jobs, and AIA Florida's ARE scholarship and PrepARE pack
+- A Campus & career page of help around the University of Florida campus: the School of Architecture, IPAL at the UF CityLabs, the Architecture & Fine Arts Library and its databases, UF AIAS, NOMAS and Alpha Rho Chi, the Career Connections Center for AXP jobs, and AIA Florida's ARE scholarship and PrepARE pack
 - 36 flashcards of key terms (6 per division) with Got it and Again, saved in the browser
 
 Every fact links to its source (NCARB, the Florida DBPR board pages and the University of Florida School of Architecture). Practice questions are written for this app; nothing is copied from NCARB or prep companies.
@@ -37,11 +45,11 @@ npm test
 
 ## Built with
 
-React, JavaScript, esbuild, Node's test runner
+React, JavaScript, esbuild, a web app manifest and service worker (installable, offline), Node's test runner
 
 ## Credits
 
-Built with help from AI coding tools; every feature is reviewed and tested before it ships. Not affiliated with or endorsed by NCARB, the Florida DBPR or the University of Florida. The orange-and-blue colors are a nod to Gainesville; no UF logos or marks are used.
+Built with help from AI coding tools; every feature is reviewed and tested before it ships. Not affiliated with, sponsored or endorsed by NCARB, the University of Florida, the Florida DBPR or the AIA. No school logos, marks or landmark images are used, and the navy-and-orange palette is the app's own. ARE®, AXP® and NCARB® are registered trademarks of the National Council of Architectural Registration Boards; AIA® is a registered trademark of the American Institute of Architects; they are named only to describe what the app helps you study. The hero and icon art are original drawings.
 
 ## License
 

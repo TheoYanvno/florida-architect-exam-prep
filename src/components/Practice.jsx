@@ -16,7 +16,7 @@ const MISSED = { ...MIXED, id: 'missed', code: 'Missed', name: 'Questions you mi
 
 export default function Practice({ initialDivision }) {
   const available = DIVISIONS.filter(d => questionsFor(d.id).length > 0);
-  const [division, setDivision] = useState(initialDivision && available.some(d => d.id === initialDivision) ? initialDivision : available[0]?.id || '');
+  const [division, setDivision] = useState(initialDivision && (['mixed', 'missed'].includes(initialDivision) || available.some(d => d.id === initialDivision)) ? initialDivision : available[0]?.id || '');
   const [timed, setTimed] = useState(false);
   const [session, setSession] = useState(null);
   const [best, setBest] = useState(loadBest);

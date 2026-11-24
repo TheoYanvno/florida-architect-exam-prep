@@ -5,30 +5,80 @@ import { UF_RESOURCES, UF_GROUPS } from './lib/uf.js';
 import { buildPlan, SUGGESTED_ORDER } from './lib/plan.js';
 import Practice from './components/Practice.jsx';
 import Flashcards from './components/Flashcards.jsx';
+import Home, { DivisionIcon } from './components/Home.jsx';
+import { Progress, Profile } from './components/Progress.jsx';
 import { loadBest } from './lib/scores.js';
 import { loadDates, saveDates } from './lib/dates.js';
 
+// Pages are hash links (#home, #plan, #practice/pa ...) so the phone's back button and home-screen app work.
+const PAGES = {
+  home: { title: 'Home' },
+  plan: { title: 'Study plan' },
+  divisions: { title: 'Exam divisions' },
+  progress: { title: 'Progress' },
+  profile: { title: 'Profile' },
+  practice: { title: 'Practice questions' },
+  cards: { title: 'Flashcards' },
+  florida: { title: 'Florida license' },
+  campus: { title: 'Campus & career' },
+};
+const NAV = [['home', 'Home', 'home'], ['plan', 'Study', 'book'], ['divisions', 'Divisions', 'layers'], ['progress', 'Progress', 'bars'], ['profile', 'Profile', 'user']];
+const ICONS = {
+  home: <path d="M4 11.5 12 5l8 6.5V20h-5.5v-5h-5v5H4z" />,
+  book: <path d="M3 6.5c3-1.4 6-1.4 9 .5 3-1.9 6-1.9 9-.5V19c-3-1.4-6-1.4-9 .5-3-1.9-6-1.9-9-.5zM12 7v12.5" />,
+  layers: <path d="m12 4 9 4.5-9 4.5-9-4.5zM3 12.5l9 4.5 9-4.5M3 16.5l9 4.5 9-4.5" />,
+  bars: <path d="M5 20V12M10 20V8M15 20V11M20 20V5M3 20h18" />,
+  user: <><circle cx="12" cy="8.5" r="3.8" /><path d="M4.5 20c.8-4 3.8-6 7.5-6s6.7 2 7.5 6" /></>,
+  menu: <path d="M4 7h16M4 12h16M4 17h16" />,
+  bell: <path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15zM10 20.5h4" />,
+};
+export const Icon = ({ name, size = 26 }) => <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" className="icon">{ICONS[name]}</svg>;
+
+const readHash = () => {
+  const [page = 'home', arg = null] = (globalThis.location?.hash || '').replace(/^#/, '').split('/');
+  return { page: PAGES[page] ? page : 'home', arg };
+};
+
 export default function App() {
-  const [tab, setTab] = useState('divisions');
-  const [practiceDivision, setPracticeDivision] = useState(null);
-  const practice = id => { setPracticeDivision(id); setTab('practice'); };
+  const [{ page, arg }, setRoute] = useState(readHash);
+  const [menu, setMenu] = useState(false);
+  useEffect(() => {
+    const on = () => { setRoute(readHash()); setMenu(false); scrollTo?.(0, 0); };
+    addEventListener('hashchange', on);
+    return () => removeEventListener('hashchange', on);
+  }, []);
+  const go = (to) => { location.hash = to; };
+  const practice = id => go(`practice/${id}`);
+  const home = page === 'home';
+  const active = ['practice', 'cards', 'florida', 'campus'].includes(page) ? 'home' : page;
+
   return (
-    <>
-      <header>
-        <h1>📐 Florida Architect Exam Prep</h1>
-        <nav aria-label="Sections">
-          <button aria-pressed={tab === 'divisions'} onClick={() => setTab('divisions')}>ARE divisions</button>
-          <button aria-pressed={tab === 'plan'} onClick={() => setTab('plan')}>Study plan</button>
-          <button aria-pressed={tab === 'practice'} onClick={() => setTab('practice')}>Practice</button>
-          <button aria-pressed={tab === 'cards'} onClick={() => setTab('cards')}>Flashcards</button>
-          <button aria-pressed={tab === 'florida'} onClick={() => setTab('florida')}>Florida license</button>
-          <button aria-pressed={tab === 'uf'} onClick={() => setTab('uf')}>At UF</button>
-        </nav>
+    <div className={`app${home ? ' is-home' : ''}`}>
+      <header className="topbar">
+        <button className="round" aria-label="Menu" aria-expanded={menu} onClick={() => setMenu(m => !m)}><Icon name="menu" /></button>
+        {!home && <h1 className="page-title">{PAGES[page].title}</h1>}
+        <a className="round" href="#plan" aria-label="Your study plan"><Icon name="bell" /></a>
       </header>
-      <main>{tab === 'divisions' ? <Divisions onPractice={practice} /> : tab === 'plan' ? <Plan onPractice={practice} />
-        : tab === 'practice' ? <Practice key={practiceDivision || 'none'} initialDivision={practiceDivision} /> : tab === 'cards' ? <Flashcards /> : tab === 'uf' ? <AtUF /> : <Florida />}</main>
-      <footer><p>For University of Florida architecture students working toward a Florida license. An independent study tool, not affiliated with or endorsed by the University of Florida, NCARB or the Florida DBPR; the orange and blue are a nod to Gainesville.</p></footer>
-    </>
+      {menu && (
+        <div className="drawer-back" onClick={() => setMenu(false)}>
+          <nav className="drawer" aria-label="All pages" onClick={e => e.stopPropagation()}>
+            <p className="drawer-brand"><img src="icon.svg" alt="" width="36" height="36" /> Architecture License Study</p>
+            {Object.entries(PAGES).map(([id, p]) => <a key={id} href={`#${id}`} aria-current={id === page ? 'page' : undefined}>{p.title}</a>)}
+          </nav>
+        </div>
+      )}
+      <main>
+        {page === 'home' ? <Home /> : page === 'plan' ? <Plan onPractice={practice} /> : page === 'divisions' ? <Divisions onPractice={practice} />
+          : page === 'practice' ? <Practice key={arg || 'none'} initialDivision={arg} /> : page === 'cards' ? <Flashcards />
+          : page === 'progress' ? <Progress /> : page === 'profile' ? <Profile /> : page === 'campus' ? <Campus /> : <Florida />}
+        <footer>
+          <p>An independent study tool for architecture students working toward a Florida license. Not affiliated with, sponsored or endorsed by NCARB, the University of Florida, the Florida DBPR or the AIA. ARE®, AXP® and NCARB® are registered trademarks of the National Council of Architectural Registration Boards; AIA® is a registered trademark of the American Institute of Architects. Practice questions and flashcards are original to this app.</p>
+        </footer>
+      </main>
+      <nav className="bottom-nav" aria-label="Main">
+        {NAV.map(([id, label, icon]) => <a key={id} href={`#${id}`} aria-current={id === active ? 'page' : undefined}><Icon name={icon} /><span>{label}</span></a>)}
+      </nav>
+    </div>
   );
 }
 
@@ -40,12 +90,12 @@ function Best({ id }) {
 function Divisions({ onPractice }) {
   return (
     <section>
-      <h2>The six ARE 5.0 divisions</h2>
+      <h2>The six ARE® 5.0 divisions</h2>
       <p className="muted">From NCARB's division pages. Weights are NCARB's typical ranges, as a share of exam items.</p>
       <div className="grid">
         {DIVISIONS.map(d => (
           <article key={d.id} className="panel">
-            <h3>{d.code} · {d.name}</h3>
+            <h3 className="div-h"><DivisionIcon id={d.id} size={30} /> {d.code} · {d.name}</h3>
             <p className="muted">{d.items} items · {formatMinutes(d.testMinutes)} test · {formatMinutes(d.appointmentMinutes)} appointment · {d.axpHours.toLocaleString()} AXP hours</p>
             <ul>
               {d.sections.map(s => (
@@ -65,11 +115,11 @@ function Divisions({ onPractice }) {
   );
 }
 
-function AtUF() {
+function Campus() {
   return (
     <section>
-      <h2>Resources at the University of Florida</h2>
-      <p className="muted">Help on and near campus for getting through the ARE and AXP while you're at UF. Each one links to its own page.</p>
+      <h2>Campus &amp; career resources</h2>
+      <p className="muted">Help on and near the University of Florida campus in Gainesville for getting through the ARE® and AXP®. Each one links to its own page; this app is not affiliated with the University of Florida.</p>
       {UF_GROUPS.map(g => (
         <div key={g}>
           <h3 className="group">{g}</h3>
