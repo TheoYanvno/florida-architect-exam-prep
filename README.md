@@ -2,7 +2,9 @@
 
 A study app for the architect registration exam (ARE® 5.0) and the path to an architect license in Florida, written for architecture students and recent graduates in Gainesville who want to pass every division on the first try. It installs on an iPhone like an app and works offline.
 
-**Live app:** https://theoyanvno.github.io/florida-architect-exam-prep/
+**Live app:** [theoyanvno.github.io/florida-architect-exam-prep](https://theoyanvno.github.io/florida-architect-exam-prep/)
+
+**Status:** finished. All 27 lessons, 156 practice questions and 300 flashcards are in, and it installs on iPhone and Android.
 
 ## Screenshots
 
@@ -34,7 +36,7 @@ It opens full screen from its own icon, keeps your progress on the phone, and wo
 - A study plan that spreads the six divisions between your start and goal dates, saved in the browser
 - 156 original practice questions (the lesson checks plus 48 more), one division at a time or a 20-question mixed test, with an optional timer at the exam's pace, explanations, a score by NCARB section and your best score saved
 - Answer choices shuffled every session, a review of every question you missed, and a Missed list to practice until you get them right
-- A Campus & career page of help around the University of Florida campus: the School of Architecture, IPAL at the UF CityLabs, the Architecture & Fine Arts Library and its databases, UF AIAS, NOMAS and Alpha Rho Chi, the Career Connections Center for AXP jobs, and AIA Florida's ARE scholarship and PrepARE pack
+- A Campus & career page of help around the University of Florida campus: the School of Architecture, IPAL at the UF CityLabs, the Architecture & Fine Arts Library and its databases, UF AIAS, NOMAS and Alpha Rho Chi, the Career Connections Center for AXP jobs, and AIA Florida's ARE Scholarship (up to two ARE seat credits) and the free AIA PrepARE Exam Readiness Pack for eligible Associate AIA members
 - 300 flashcards of key terms (50 per division) with Got it and Again, saved in the browser
 
 Every fact links to its source (NCARB, the Florida DBPR board pages and the University of Florida School of Architecture). Practice questions are written for this app; nothing is copied from NCARB or prep companies.
@@ -44,8 +46,11 @@ Every fact links to its source (NCARB, the Florida DBPR board pages and the Univ
 ```
 npm install
 npm start      # http://localhost:8000
-npm test
+npm test       # the course, practice questions, flashcards, study plan and progress
+npm run build  # builds the site into docs/ for GitHub Pages
 ```
+
+It works the same on Windows, macOS and Linux (in the VS Code terminal on Windows).
 
 ## Built with
 
