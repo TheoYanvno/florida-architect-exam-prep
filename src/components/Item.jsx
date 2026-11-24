@@ -50,6 +50,7 @@ export default function ItemInput({ q, value = [], onChange, reveal = false, dis
   return (
     <>
       {q.case && <CaseBrief id={q.case} open={caseOpen} />}
+      {q.figure && q.type !== 'hotspot' && figureById(q.figure) && <div className="exhibit"><Figure meta={figureById(q.figure)} /></div>}
       {howTo(q) && <p className="muted small how">{howTo(q)}</p>}
       {body}
     </>

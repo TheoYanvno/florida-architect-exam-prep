@@ -236,3 +236,11 @@ details.case { margin:10px 0 14px; padding:10px 14px; border:1px solid var(--lin
 details.case summary { cursor:pointer; padding:4px 0; }
 details.case h4 { margin:12px 0 4px; }
 .table-wrap { overflow-x:auto; }
+.fig-plain { font-weight:400; }
+.fig-grid { stroke:var(--line); }
+.fig-arrow { fill:none; stroke:var(--orange); stroke-width:2; marker-end:none; }
+.fig-pv { fill:none; stroke:var(--accent); stroke-width:3; }
+.fig-ev { fill:none; stroke:var(--orange); stroke-width:3; stroke-dasharray:8 4; }
+.fig-duct { fill:rgb(37 99 235 / .12); stroke:#2563eb; stroke-width:2; }
+.exhibit { margin:10px 0; }
+.exhibit .figure { cursor:default; }

@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { QUESTIONS, questionsFor, isCorrect, score, shuffled, mixedSet, shuffleChoices, dealChoices } from '../src/lib/questions.js';
+const rightOf = q => q.type === 'number' ? [String(q.answer)] : q.type === 'hotspot' ? (q.target.points ? q.target.points.reduce((a, p) => [a[0] + p[0] / q.target.points.length, a[1] + p[1] / q.target.points.length], [0, 0]) : [q.target.x + q.target.w / 2, q.target.y + q.target.h / 2]) : q.answer;
 import { DIVISIONS } from '../src/lib/are.js';
 
 test('every question is well formed and tied to a real NCARB section', () => {
@@ -49,7 +50,7 @@ test('a mixed test draws from several divisions and labels sections by division'
   assert.ok(new Set(set.map(q => q.division)).size >= 4);
   assert.ok(set.every(q => /^(PcM|PjM|PA|PPD|PDD|CE) · /.test(q.section)));
   assert.equal(new Set(set.map(q => q.id)).size, 20);
-  const r = score(set, Object.fromEntries(set.map(q => [q.id, q.answer])));
+  const r = score(set, Object.fromEntries(set.map(q => [q.id, rightOf(q)])));
   assert.equal(r.percent, 100);
 });
 
