@@ -245,3 +245,7 @@ details.case h4 { margin:12px 0 4px; }
 .exhibit { margin:10px 0; }
 .exhibit .figure { cursor:default; }
 .fig-slope { fill:none; stroke:var(--accent); stroke-width:2; }
+.fig-light { fill:rgb(23 63 130 / .04); }
+.fig-glass { stroke:#2563eb; stroke-width:5; opacity:.7; }
+.fig-thick { stroke-width:5; }
+.fig-ray { fill:none; stroke:var(--orange); stroke-width:2; stroke-dasharray:6 4; }

@@ -255,6 +255,51 @@ const ART = {
       </>
     );
   },
+
+  // --- PPD ---
+  'ppd-beam': () => (
+    <>
+      <rect x="50" y="104" width="300" height="12" className="fig-fill" />
+      <path d="M50 116l-12 22h24zM350 116l-12 22h24z" className="fig-line" />
+      <circle cx="338" cy="142" r="4" className="fig-line" /><circle cx="362" cy="142" r="4" className="fig-line" />
+      <path d="M30 140H75M325 146H375" className="fig-line" />
+      <path d="M50 60H350" className="fig-line" />
+      {Array.from({ length: 11 }, (_, k) => 50 + k * 30).map((x) => <path key={x} d={`M${x} 60V98M${x - 5} 90l5 8 5-8`} className="fig-line" />)}
+      <T x="200" y="50" size="12">Uniform load w = 1 kip/ft</T>
+      <path d="M50 180H350M50 172v16M350 172v16" className="fig-thin" />
+      <T x="200" y="200" size="12">L = 20 ft</T>
+    </>
+  ),
+  'ppd-egress': () => (
+    <>
+      <rect x="10" y="30" width="400" height="260" className="fig-building fig-light" />
+      <rect x="10" y="135" width="40" height="55" className="fig-fill" /><T x="30" y="167" size="10">Stair</T>
+      <rect x="370" y="135" width="40" height="55" className="fig-fill" /><T x="390" y="167" size="10">Stair</T>
+      <path d="M50 150H195V40H235V150H370M50 175H290M290 175H370" className="fig-line" />
+      {[60, 120].map((x) => <g key={x}><rect x={x} y="40" width="60" height="110" className="fig-thin" /><T x={x + 30} y="98" size="10" className="fig-label fig-plain">Office</T></g>)}
+      {[240, 305].map((x) => <g key={x}><rect x={x} y="40" width="65" height="110" className="fig-thin" /><T x={x + 32} y="98" size="10" className="fig-label fig-plain">Office</T></g>)}
+      {[50, 130, 210].map((x) => <g key={x}><rect x={x} y="175" width="80" height="115" className="fig-thin" /><T x={x + 40} y="235" size="10" className="fig-label fig-plain">Office</T></g>)}
+      <rect x="290" y="175" width="120" height="115" className="fig-thin" />
+      <T x="350" y="228" size="11">Conference</T><T x="350" y="244" size="10">80 occupants</T>
+      <T x="140" y="166" size="10">Corridor</T>
+      <T x="215" y="24" size="10">Business occupancy · fully sprinklered</T>
+    </>
+  ),
+  'ppd-section': () => (
+    <>
+      <path d="M10 250H390" className="fig-line" />
+      <path d="M60 250V245M60 82V70" className="fig-line" />
+      <path d="M60 90V240" className="fig-glass" />
+      <path d="M10 80H66" className="fig-line fig-thick" />
+      <path d="M20 140H170" className="fig-line fig-thick" />
+      <path d="M60 70L380 110M380 110V250" className="fig-line" />
+      <path d="M0 20L52 136M136 116L250 92" className="fig-ray" />
+      <T x="34" y="72" size="10">Overhang</T>
+      <T x="300" y="200" size="11">Room</T>
+      <T x="36" y="270" size="10">South</T>
+      <T x="230" y="272" size="11">Section · south-facing room</T>
+    </>
+  ),
 };
 
 export const hasArt = (id) => id in ART;
