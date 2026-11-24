@@ -258,3 +258,4 @@ details.case h4 { margin:12px 0 4px; }
 .fig-grid-line { fill:none; stroke:var(--muted); stroke-width:1; stroke-dasharray:14 4 3 4; }
 .fig-bubble { fill:var(--panel); }
 .fig-cut { fill:none; stroke:var(--text); stroke-width:3; stroke-dasharray:16 5 4 5; }
+.palette-wrap { margin:8px 0; } .palette-wrap summary { cursor:pointer; color:var(--accent); font-weight:600; padding:4px 0; }

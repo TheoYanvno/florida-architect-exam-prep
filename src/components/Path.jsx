@@ -5,7 +5,7 @@ import { isCorrect, isAnswered, answerText, score, dealChoices } from '../lib/qu
 import ItemInput from './Item.jsx';
 import { loadMissed, saveMissed, updateMissed } from '../lib/missed.js';
 import { loadBest, recordBest, saveBest } from '../lib/scores.js';
-import { quizSet, examSet, examSeconds, loadPath, savePath, recordQuiz, recordExam, lessonsDone, quizPassed, recordDay, QUIZ_PASS, QUIZ_SIZE, EXAM_PASS } from '../lib/path.js';
+import { quizSet, examSet, examLength, loadRun, saveRun, clearRun, examSeconds, loadPath, savePath, recordQuiz, recordExam, lessonsDone, quizPassed, recordDay, QUIZ_PASS, QUIZ_SIZE, EXAM_PASS } from '../lib/path.js';
 import { Review } from './Practice.jsx';
 import { DivisionIcon } from './Home.jsx';
 
@@ -99,14 +99,17 @@ export function DivisionQuiz({ id }) {
 export function PracticeExam({ id }) {
   const d = division(id);
   const path = loadPath();
-  const [run, setRun] = useState(null);       // { questions, timed }
+  const [run, setRun] = useState(null);       // { questions, timed, answers?, flags?, left?, i? }
   const [timed, setTimed] = useState(true);
+  const [, refresh] = useState(0);
+  const saved = loadRun(d.id);
   if (!quizPassed(d.id, path)) {
     return <Locked d={d}>Pass the {d.code} division quiz first ({QUIZ_PASS}% or better). The practice exam unlocks after it.</Locked>;
   }
   if (run) return <ExamRun d={d} {...run} onExit={() => setRun(null)} />;
 
-  const n = examSet(d.id, 1).length;
+  const n = examLength(d.id);
+  const full = n === d.items;
   const seconds = examSeconds(d.id, n);
   const best = path.exam[d.id];
   return (
@@ -114,23 +117,33 @@ export function PracticeExam({ id }) {
       <p className="kicker-sm"><a href={`#learn/${d.id}`}>{d.code}</a> · Step 3 of 3 · Practice exam</p>
       <h2 className="div-h"><DivisionIcon id={d.id} size={30} /> {d.code} practice exam</h2>
       <ul>
-        <li>{n} questions from every {d.code} section, including 10 you haven’t seen in the lessons or the quiz.</li>
+        <li>{n} questions spread across the {d.code} sections by NCARB’s published weights, with a case study at the end. Each exam draws a new mix, including questions you won’t have seen in the lessons or the quiz.</li>
+        <li>Item types like the real exam: multiple choice, check all that apply, number fill-in, hot spot and drag-and-place.</li>
         <li>Like the real exam, you don’t see answers until you submit. Flag questions to come back to them.</li>
         <li>Pass with {EXAM_PASS}% or better. (The real ARE uses a scaled score; this is a practice target.)</li>
-        <li>The real {d.code} has {d.items} items in {d.testMinutes} minutes. This one is shorter but keeps the same pace.</li>
+        <li>{full ? `Full length: the real ${d.code} has ${d.items} items in ${d.testMinutes} minutes, and so does this one.` : `The real ${d.code} has ${d.items} items in ${d.testMinutes} minutes. This one keeps the same pace.`} You can stop partway and pick up where you left off.</li>
       </ul>
       <label className="check"><input type="checkbox" checked={timed} onChange={e => setTimed(e.target.checked)} /> Timed: {Math.floor(seconds / 60)} min {seconds % 60 ? `${seconds % 60} s` : ''}</label>
       {best && <p className="muted">Your best: {best.percent}%{best.timed ? ' · passed with the timer on' : ''}</p>}
-      <button className="primary" onClick={() => { const seed = Date.now(); setRun({ questions: dealChoices(examSet(d.id, seed), seed), timed }); }}>Start the exam</button>
+      {saved && (
+        <div className="confirm">
+          <p><b>You have an exam in progress.</b> {saved.questions.filter(q => isAnswered(q, saved.answers?.[q.id])).length} of {saved.questions.length} answered{saved.left !== null && saved.left !== undefined ? `, ${Math.floor(saved.left / 60)} min left` : ''}.</p>
+          <div className="row">
+            <button className="primary" onClick={() => setRun(saved)}>Resume</button>
+            <button onClick={() => { clearRun(); refresh(n => n + 1); }}>Discard it</button>
+          </div>
+        </div>
+      )}
+      <button className={saved ? '' : 'primary'} onClick={() => { const seed = Date.now(); clearRun(); setRun({ questions: dealChoices(examSet(d.id, seed), seed), timed }); }}>{saved ? 'Start a new exam' : 'Start the exam'}</button>
     </section>
   );
 }
 
-function ExamRun({ d, questions, timed, onExit }) {
-  const [i, setI] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [flags, setFlags] = useState([]);
-  const [left, setLeft] = useState(timed ? examSeconds(d.id, questions.length) : null);
+function ExamRun({ d, questions, timed, onExit, answers: a0, flags: f0, left: l0, i: i0 }) {
+  const [i, setI] = useState(i0 || 0);
+  const [answers, setAnswers] = useState(a0 || {});
+  const [flags, setFlags] = useState(f0 || []);
+  const [left, setLeft] = useState(l0 !== undefined ? l0 : timed ? examSeconds(d.id, questions.length) : null);
   const [confirm, setConfirm] = useState(false);
   const [result, setResult] = useState(null);
 
@@ -148,9 +161,12 @@ function ExamRun({ d, questions, timed, onExit }) {
     const b = recordBest(loadBest(), d.id, r);
     if (b.isNew) saveBest(b.best);
     saveCommon(questions, answers);
+    clearRun();
     setResult({ ...r, timeUp, firstPass: r.percent >= EXAM_PASS && !passedBefore });
   };
   useEffect(() => { if (left === 0 && !result) submit(true); }, [left]);
+  // Keep the exam saved as you go, so it can be resumed after closing the page.
+  useEffect(() => { if (!result) saveRun({ division: d.id, questions, timed, answers, flags, left, i }); }, [answers, flags, left, i, result]);
 
   if (result) {
     const pass = result.percent >= EXAM_PASS;
@@ -183,22 +199,25 @@ function ExamRun({ d, questions, timed, onExit }) {
         <span className="muted">{d.code} practice exam · {answered} of {questions.length} answered</span>
         {left !== null && <span className={left < 60 ? 'error' : 'muted'} aria-live="off">⏱ {Math.floor(left / 60)}:{String(left % 60).padStart(2, '0')}</span>}
       </div>
+      <details className="palette-wrap">
+        <summary>All questions · {answered} answered · {flags.length} flagged</summary>
       <nav className="palette" aria-label="Questions">
         {questions.map((x, k) => (
           <button key={x.id} aria-label={`Question ${k + 1}${isAnswered(x, answers[x.id]) ? ', answered' : ''}${flags.includes(x.id) ? ', flagged' : ''}`} aria-current={k === i ? 'step' : undefined}
             className={[isAnswered(x, answers[x.id]) && 'answered', flags.includes(x.id) && 'flagged'].filter(Boolean).join(' ')} onClick={() => setI(k)}>{k + 1}</button>
         ))}
       </nav>
+      </details>
       <p className="muted">Question {i + 1} of {questions.length} · {q.section}</p>
       <h3>{q.prompt}</h3>
-      <ItemInput key={q.id} q={q} value={picked} onChange={v => setAnswers(a => ({ ...a, [q.id]: v }))} />
+      <ItemInput key={q.id} q={q} value={picked} caseOpen={!!q.case && questions[i - 1]?.case !== q.case} onChange={v => setAnswers(a => ({ ...a, [q.id]: v }))} />
       <div className="row">
         <button disabled={i === 0} onClick={() => setI(i - 1)}>‹ Back</button>
         <button aria-pressed={flagged} onClick={() => setFlags(f => (flagged ? f.filter(x => x !== q.id) : [...f, q.id]))}>{flagged ? '⚑ Flagged' : '⚐ Flag'}</button>
         {i + 1 < questions.length ? <button className="primary" onClick={() => setI(i + 1)}>Next ›</button>
           : <button className="primary" onClick={() => setConfirm(true)}>Review &amp; submit</button>}
       </div>
-      {i + 1 < questions.length && <p><button className="link" onClick={() => setConfirm(true)}>Submit the exam</button></p>}
+      <p className="row">{i + 1 < questions.length && <button className="link" onClick={() => setConfirm(true)}>Submit the exam</button>}<button className="link" onClick={onExit}>Save and finish later</button></p>
       {confirm && (
         <div className="confirm" role="alertdialog" aria-labelledby="confirm-h">
           <p id="confirm-h"><b>Submit now?</b> {questions.length - answered ? `${questions.length - answered} unanswered (they count as wrong). ` : 'Every question is answered. '}{flags.length ? `${flags.length} flagged.` : ''}</p>

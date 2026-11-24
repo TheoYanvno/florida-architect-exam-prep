@@ -4,7 +4,7 @@ A study app for the architect registration exam (ARE® 5.0) and the path to an a
 
 **Live app:** [theoyanvno.github.io/florida-architect-exam-prep](https://theoyanvno.github.io/florida-architect-exam-prep/)
 
-**Status:** finished. Each of the six divisions is a full path of lessons, a quiz and a practice exam, with 216 questions, 300 flashcards and 32 achievements, and it installs on iPhone and Android.
+**Status:** finished. Each of the six divisions is a full path of lessons, a quiz and a practice exam, with 573 questions, full-length practice exams, 300 flashcards and 32 achievements, and it installs on iPhone and Android.
 
 ## Screenshots
 
@@ -12,7 +12,7 @@ A study app for the architect registration exam (ARE® 5.0) and the path to an a
 |---|---|---|
 | <img src="screenshots/home.png" alt="Home: overall progress ring, days to goal, your level, points and streak, and a course card for each division" width="240"> | <img src="screenshots/course.png" alt="A division's path: lessons, then the division quiz, then the practice exam" width="240"> | <img src="screenshots/lesson.png" alt="A lesson with a worked example" width="240"> |
 | **Practice exam** | **Achievements** | **Study plan** |
-| <img src="screenshots/exam.png" alt="A timed practice exam with a question palette and flags" width="240"> | <img src="screenshots/achievements.png" alt="Division badges, one earned and the rest showing progress" width="240"> | <img src="screenshots/plan.png" alt="A study plan spread between start and goal dates" width="240"> |
+| <img src="screenshots/exam.png" alt="A full-length practice exam with a hot-spot question on a drawing" width="240"> | <img src="screenshots/achievements.png" alt="Division badges, one earned and the rest showing progress" width="240"> | <img src="screenshots/plan.png" alt="A study plan spread between start and goal dates" width="240"> |
 | **Practice** | | |
 | <img src="screenshots/practice.png" alt="Choosing a practice set" width="240"> | | |
 | **Flashcards** | **Progress** | **Campus & career** |
@@ -32,7 +32,7 @@ Like CodeForge, each division is a path in three steps:
 
 1. **Lessons.** One lesson for each NCARB content section. Each one teaches the material, works the numbers, sums up what to remember and ends with a check: four questions on the lesson plus the division's practice questions on that section, five to seven in all (75% finishes it).
 2. **Division quiz.** Unlocks when every lesson is finished: 10 questions on what the lessons taught, with the answer and explanation after each one. Pass with 75%.
-3. **Practice exam.** Unlocks when the quiz is passed: every question for the division, including 10 you won't have seen in a lesson or quiz. As on the real exam, you don't see answers until you submit, and you can flag questions and jump between them. The timer keeps the real division's pace. Pass with 70%; results are broken down by NCARB section.
+3. **Practice exam.** Unlocks when the quiz is passed. It is full length, with the real division's item count (65 for PcM, 75 for PjM, PA and CE, 100 for PPD and PDD), spread across NCARB's sections by its published weights and ending with a case study. Each exam draws a new mix from the bank. As on the real exam, you don't see answers until you submit, you can flag questions and jump between them, and the timer runs at the real division's length. You can stop and resume later. Pass with 70%; results are broken down by NCARB section.
 
 Pass all three to earn the division's badge. **Achievements** award points (20 per lesson, 50 per quiz, 100 per exam, 2 per flashcard). There are three levels (Candidate, Course graduate, Exam ready), a badge for each division and 23 milestones, among them Perfect quiz, Beat the clock, Halfway there (3 divisions finished), Card sharp and Total recall (70% and 100% on a flashcard quiz) and streaks from 3 days up to six months. Free practice and flashcards stay open at any time.
 
@@ -46,7 +46,7 @@ Pass all three to earn the division's badge. **Achievements** award points (20 p
 - The AXP experience hours by area
 - A Florida licensing checklist from the Florida Board of Architecture and Interior Design
 - A study plan that spreads the six divisions between your start and goal dates, saved in the browser
-- 216 original questions (the lesson checks, 48 practice questions and 60 exam questions), one division at a time or a 20-question mixed test, with an optional timer at the exam's pace, explanations, a score by NCARB section and your best score saved
+- 573 original questions written to NCARB's objectives, in the ARE's item types: multiple choice, check all that apply, number fill-in (65), hot spot on 20 original drawings (24) and drag-and-place (19), plus six case studies, one per division, each a project brief with tables that 6 or 7 questions refer to. Practice them one division at a time or a 20-question mixed test, with an optional timer at the exam's pace, explanations, a score by NCARB section and your best score saved
 - Answer choices shuffled every session, a review of every question you missed, and a Missed list to practice until you get them right
 - A Campus & career page of help around the University of Florida campus: the School of Architecture, IPAL at the UF CityLabs, the Architecture & Fine Arts Library and its databases, UF AIAS, NOMAS and Alpha Rho Chi, the Career Connections Center for AXP jobs, and AIA Florida's ARE Scholarship (up to two ARE seat credits) and the free AIA PrepARE Exam Readiness Pack for eligible Associate AIA members
 - 300 flashcards of key terms (50 per division) with Got it and Again, saved in the browser, and a flashcard quiz mode: see a definition, pick the matching term from four, ten at a time, with your best score saved

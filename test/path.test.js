@@ -5,11 +5,11 @@ import { lessonsFor, PASS_MARK } from '../src/lib/course/index.js';
 import { QUESTIONS } from '../src/lib/questions.js';
 import { EXAM_QUESTIONS } from '../src/lib/exam-questions.js';
 import {
-  quizPool, examPool, quizSet, examSet, examSeconds, loadPath, savePath, recordQuiz, recordExam,
+  quizPool, examPool, quizSet, examSet, examLength, loadRun, saveRun, clearRun, examSeconds, loadPath, savePath, recordQuiz, recordExam,
   stage, steps, loadDays, recordDay, streak, bestStreak, QUIZ_SIZE, QUIZ_PASS, EXAM_PASS,
 } from '../src/lib/path.js';
 
-const store = () => { const m = new Map(); return { getItem: k => m.get(k) ?? null, setItem: (k, v) => m.set(k, String(v)) }; };
+const store = () => { const m = new Map(); return { getItem: k => m.get(k) ?? null, setItem: (k, v) => m.set(k, String(v)), removeItem: k => m.delete(k) }; };
 const allDone = div => Object.fromEntries(lessonsFor(div).map(l => [l.id, PASS_MARK]));
 
 test('ten exam-only questions per division, well formed, in the question bank', () => {
@@ -26,14 +26,41 @@ test('ten exam-only questions per division, well formed, in the question bank', 
   assert.equal(new Set(QUESTIONS.map(q => q.id)).size, QUESTIONS.length);
 });
 
-test('the quiz never uses exam-only questions; the exam uses all of them', () => {
+test('the quiz never uses exam-only or case questions', () => {
   for (const d of DIVISIONS) {
     assert.ok(quizPool(d.id).length >= QUIZ_SIZE, d.id);
-    assert.ok(quizPool(d.id).every(q => !q.exam && q.division === d.id));
+    assert.ok(quizPool(d.id).every(q => !q.exam && !q.case && q.division === d.id));
     assert.equal(quizSet(d.id, 7).length, QUIZ_SIZE);
-    assert.equal(examSet(d.id, 7).length, examPool(d.id).length);
     assert.equal(examPool(d.id).filter(q => q.exam).length, 10);
   }
+});
+
+test('practice exams are full length, weighted by section, with one case study at the end', () => {
+  for (const d of DIVISIONS) {
+    const set = examSet(d.id, 11);
+    assert.equal(set.length, d.items, `${d.id} is full length`);
+    assert.equal(examLength(d.id), d.items);
+    assert.equal(new Set(set.map(q => q.id)).size, set.length, d.id);
+    const cases = [...new Set(set.filter(q => q.case).map(q => q.case))];
+    assert.equal(cases.length, 1, d.id);
+    const first = set.findIndex(q => q.case);
+    assert.ok(set.slice(first).every(q => q.case === cases[0]), `${d.id}: case items together at the end`);
+    for (const s of d.sections) {
+      const n = set.filter(q => q.section === s.name).length;
+      assert.ok(n >= Math.round(d.items * s.min / 100) && n <= Math.round(d.items * s.max / 100), `${d.id} ${s.name}: ${n} within NCARB's range`);
+    }
+    assert.notDeepEqual(examSet(d.id, 12).map(q => q.id), set.map(q => q.id));
+  }
+});
+
+test('an exam in progress is saved and resumed for its division only', () => {
+  const s = store();
+  assert.equal(loadRun('pa', s), null);
+  saveRun({ division: 'pa', questions: [{ id: 'x' }], answers: { x: [1] }, left: 90, i: 0, flags: [] }, s);
+  assert.equal(loadRun('pa', s).left, 90);
+  assert.equal(loadRun('ce', s), null);
+  clearRun(s);
+  assert.equal(loadRun('pa', s), null);
 });
 
 test('exam time keeps the real pace', () => {
