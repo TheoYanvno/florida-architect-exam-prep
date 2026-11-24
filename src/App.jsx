@@ -7,12 +7,15 @@ import Practice from './components/Practice.jsx';
 import Flashcards from './components/Flashcards.jsx';
 import Home, { DivisionIcon } from './components/Home.jsx';
 import { Progress, Profile } from './components/Progress.jsx';
+import { CourseHome, DivisionCourse, Lesson } from './components/Course.jsx';
 import { loadBest } from './lib/scores.js';
 import { loadDates, saveDates } from './lib/dates.js';
 
 // Pages are hash links (#home, #plan, #practice/pa ...) so the phone's back button and home-screen app work.
 const PAGES = {
   home: { title: 'Home' },
+  learn: { title: 'Course' },
+  lesson: { title: 'Lesson' },
   plan: { title: 'Study plan' },
   divisions: { title: 'Exam divisions' },
   progress: { title: 'Progress' },
@@ -22,7 +25,7 @@ const PAGES = {
   florida: { title: 'Florida license' },
   campus: { title: 'Campus & career' },
 };
-const NAV = [['home', 'Home', 'home'], ['plan', 'Study', 'book'], ['divisions', 'Divisions', 'layers'], ['progress', 'Progress', 'bars'], ['profile', 'Profile', 'user']];
+const NAV = [['home', 'Home', 'home'], ['learn', 'Study', 'book'], ['divisions', 'Divisions', 'layers'], ['progress', 'Progress', 'bars'], ['profile', 'Profile', 'user']];
 const ICONS = {
   home: <path d="M4 11.5 12 5l8 6.5V20h-5.5v-5h-5v5H4z" />,
   book: <path d="M3 6.5c3-1.4 6-1.4 9 .5 3-1.9 6-1.9 9-.5V19c-3-1.4-6-1.4-9 .5-3-1.9-6-1.9-9-.5zM12 7v12.5" />,
@@ -50,7 +53,7 @@ export default function App() {
   const go = (to) => { location.hash = to; };
   const practice = id => go(`practice/${id}`);
   const home = page === 'home';
-  const active = ['practice', 'cards', 'florida', 'campus'].includes(page) ? 'home' : page;
+  const active = page === 'lesson' ? 'learn' : ['practice', 'cards', 'florida', 'campus', 'plan'].includes(page) ? 'home' : page;
 
   return (
     <div className={`app${home ? ' is-home' : ''}`}>
@@ -63,12 +66,12 @@ export default function App() {
         <div className="drawer-back" onClick={() => setMenu(false)}>
           <nav className="drawer" aria-label="All pages" onClick={e => e.stopPropagation()}>
             <p className="drawer-brand"><img src="icon.svg" alt="" width="36" height="36" /> Architecture License Study</p>
-            {Object.entries(PAGES).map(([id, p]) => <a key={id} href={`#${id}`} aria-current={id === page ? 'page' : undefined}>{p.title}</a>)}
+            {Object.entries(PAGES).filter(([id]) => id !== 'lesson').map(([id, p]) => <a key={id} href={`#${id}`} aria-current={id === page ? 'page' : undefined}>{p.title}</a>)}
           </nav>
         </div>
       )}
       <main>
-        {page === 'home' ? <Home /> : page === 'plan' ? <Plan onPractice={practice} /> : page === 'divisions' ? <Divisions onPractice={practice} />
+        {page === 'home' ? <Home /> : page === 'learn' ? (arg ? <DivisionCourse id={arg} /> : <CourseHome />) : page === 'lesson' ? <Lesson key={arg} id={arg} /> : page === 'plan' ? <Plan onPractice={practice} /> : page === 'divisions' ? <Divisions onPractice={practice} />
           : page === 'practice' ? <Practice key={arg || 'none'} initialDivision={arg} /> : page === 'cards' ? <Flashcards />
           : page === 'progress' ? <Progress /> : page === 'profile' ? <Profile /> : page === 'campus' ? <Campus /> : <Florida />}
         <footer>

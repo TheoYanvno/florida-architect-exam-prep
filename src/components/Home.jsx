@@ -1,6 +1,7 @@
 import { loadBest } from '../lib/scores.js';
 import { loadDates } from '../lib/dates.js';
 import { loadPassed, loadName, summary, greeting } from '../lib/progress.js';
+import { loadLessons } from '../lib/course/index.js';
 
 // Line icons for the six divisions, drawn for this app.
 const DIV_ICONS = {
@@ -16,6 +17,8 @@ export const DivisionIcon = ({ id, size = 34 }) => (
 );
 
 const TOOLS = [
+  ['#learn', 'Lessons', 'Learn each division section by section, then check yourself',
+    <path d="M12 4 2.5 8.5 12 13l9.5-4.5zM6 10.5v4.5c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5M21.5 8.5V14" />],
   ['#practice', 'Practice Questions', 'Exam-style questions with explanations',
     <><rect x="5" y="4.5" width="14" height="16" rx="2" /><path d="M9 4.5V3h6v1.5M8 10l1.2 1.2L11.5 9M13 10.5h3M8 15l1.2 1.2L11.5 14M13 15.5h3" /></>],
   ['#cards', 'Flashcards', 'Key terms, codes and concepts',
@@ -45,7 +48,7 @@ export default function Home() {
   const name = loadName();
   const { goal } = loadDates();
   const today = new Date().toISOString().slice(0, 10);
-  const s = summary(best, passed, goal, today);
+  const s = summary(best, passed, goal, today, loadLessons());
   const started = s.passed + s.inProgress;
   return (
     <div className="home">
@@ -78,7 +81,7 @@ export default function Home() {
       <div className="section-head"><h2>Exam Divisions</h2><a href="#divisions">View all →</a></div>
       <div className="div-grid">
         {s.each.map(d => (
-          <a key={d.id} className="card div-card" href={`#practice/${d.id}`}>
+          <a key={d.id} className="card div-card" href={`#learn/${d.id}`}>
             <span className="div-top"><DivisionIcon id={d.id} /><span><b>{d.code}</b><small>{d.name}</small></span></span>
             <span className="div-bar"><span className="bar"><span style={{ width: `${d.percent}%` }} /></span><span>{d.passed ? 'Passed' : `${d.percent}%`}</span></span>
           </a>

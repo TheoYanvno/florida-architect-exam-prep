@@ -5,23 +5,24 @@ import { loadMissed } from '../lib/missed.js';
 import { loadKnown, CARDS } from '../lib/flashcards.js';
 import { loadPassed, savePassed, togglePassed, loadName, saveName, summary } from '../lib/progress.js';
 import { DivisionIcon } from './Home.jsx';
+import { loadLessons } from '../lib/course/index.js';
 
 /** Each division's readiness, with a switch to mark it passed, and what you've saved along the way. */
 export function Progress() {
   const best = loadBest();
   const [passed, setPassed] = useState(loadPassed);
-  const s = summary(best, passed, loadDates().goal, new Date().toISOString().slice(0, 10));
+  const s = summary(best, passed, loadDates().goal, new Date().toISOString().slice(0, 10), loadLessons());
   const flip = id => { const next = togglePassed(passed, id); setPassed(next); savePassed(next); };
   return (
     <>
       <section className="card">
         <h2>Your divisions</h2>
-        <p className="muted">Readiness is your best practice score. When you pass a division, mark it here.</p>
+        <p className="muted">Readiness counts the lessons you have finished (40%) and your best practice score (60%). When you pass a division, mark it here.</p>
         <ul className="progress-list">
           {s.each.map(d => (
             <li key={d.id}>
               <DivisionIcon id={d.id} size={30} />
-              <span className="pl-name"><b>{d.code}</b> {d.name}
+              <span className="pl-name"><span><b>{d.code}</b> {d.name} <span className="muted small">· lessons {d.lessons}% · {d.percent}% ready</span></span>
                 <span className="bar"><span style={{ width: `${d.percent}%` }} /></span>
               </span>
               <label className="check pass"><input type="checkbox" checked={d.passed} onChange={() => flip(d.id)} /> Passed</label>

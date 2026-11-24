@@ -48,6 +48,7 @@ export default function Practice({ initialDivision }) {
         </label>
         <label className="check"><input type="checkbox" checked={timed} onChange={e => setTimed(e.target.checked)} /> Timed at the exam's pace</label>
       </div>
+      {d && !['mixed', 'missed'].includes(d.id) && <p className="muted small">New to {d.code}? <a href={`#learn/${d.id}`}>Study its lessons first ›</a></p>}
       {d && timed && <p className="muted">{d.id === 'mixed' || d.id === 'missed' ? 'At the average pace of all six divisions' : `At ${d.items} items in ${d.testMinutes} minutes`}, that's about {Math.round((d.testMinutes * 60) / d.items)} seconds a question.</p>}
       <button className="primary" disabled={!d} onClick={() => setSession({ division: d, questions: dealChoices(d.id === 'mixed' ? mixedSet(20) : d.id === 'missed' ? missedSet(missed) : shuffled(questionsFor(d.id))), timed })}>Start</button>
     </section>

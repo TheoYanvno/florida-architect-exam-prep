@@ -2,7 +2,9 @@
 // to a division and one of its NCARB sections, has one or more correct choices, and explains the answer.
 // Types: 'single' (pick one) and 'multi' (pick all that apply), the two most common ARE item types.
 
-export const QUESTIONS = [
+import { LESSON_QUESTIONS } from './course/index.js';
+
+const BASE = [
   {
     id: 'pcm-001', division: 'pcm', section: 'Business Operations', type: 'single',
     prompt: 'A firm\'s direct salary expense for a project is $40,000. The firm bills at a 3.0 multiplier on direct salary. What fee does that labor produce?',
@@ -301,6 +303,9 @@ export const QUESTIONS = [
     explain: 'Addenda modify the bidding documents before bids are received and become part of the contract documents. Change orders and directives modify a contract that already exists.',
   },
 ];
+
+// The practice pool: the original practice set plus every lesson's check questions.
+export const QUESTIONS = [...BASE, ...LESSON_QUESTIONS];
 
 export function questionsFor(division) {
   return QUESTIONS.filter(q => q.division === division);

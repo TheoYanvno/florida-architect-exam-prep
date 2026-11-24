@@ -26,7 +26,7 @@ test('multi-select needs exactly the right choices', () => {
 });
 
 test('scoring totals and breaks results down by section', () => {
-  const qs = questionsFor('pcm');
+  const qs = questionsFor('pcm').filter(q => /^pcm-0/.test(q.id));   // the original practice set
   const answers = Object.fromEntries(qs.map(q => [q.id, q.answer]));
   answers['pcm-001'] = [0];
   const r = score(qs, answers);
@@ -58,7 +58,8 @@ test('choices are dealt in a new order with the answer moved along, so its spot 
     assert.deepEqual(d.answer.map(i => d.choices[i]).sort(), q.answer.map(i => q.choices[i]).sort(), q.id);
   }
   const spots = [0, 0, 0, 0];
-  for (const q of dealChoices(QUESTIONS.filter(x => x.type === 'single'), 11)) spots[q.answer[0]]++;
-  assert.ok(Math.max(...spots) < 20, `answers bunch up: ${spots}`);
+  const singles = dealChoices(QUESTIONS.filter(x => x.type === 'single' && x.choices.length === 4), 11);
+  for (const q of singles) spots[q.answer[0]]++;
+  assert.ok(Math.max(...spots) < singles.length * 0.4, `answers bunch up: ${spots}`);
   assert.deepEqual(dealChoices(QUESTIONS, 3), dealChoices(QUESTIONS, 3));
 });
