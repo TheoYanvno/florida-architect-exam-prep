@@ -308,6 +308,12 @@ const BASE = [
 // The practice pool: the original practice set plus every lesson's check questions.
 export const QUESTIONS = [...BASE, ...LESSON_QUESTIONS, ...EXAM_QUESTIONS];
 
+// A lesson's check: its own questions, then the division's practice questions on the same NCARB section,
+// so students meet every practice question while studying, before the quiz and the exam.
+export const PRACTICE_QUESTIONS = BASE;
+export const lessonCheck = lesson =>
+  [...lesson.quiz, ...BASE.filter(q => q.division === lesson.division && q.section === lesson.section)];
+
 export function questionsFor(division) {
   return QUESTIONS.filter(q => q.division === division);
 }

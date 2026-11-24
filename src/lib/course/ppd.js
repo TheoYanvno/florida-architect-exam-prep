@@ -102,7 +102,7 @@ export default [
         'In hot-humid climates, vapor moves from the humid outside toward the cool, air-conditioned inside, so avoid vapor-tight layers (like vinyl wallcovering) on the inside face of exterior walls.',
       ] },
       { h: 'Building services', list: [
-        'HVAC: all-air systems (VAV), air-water and all-water systems (fan coils), and packaged rooftop units. Dedicated outdoor air systems handle ventilation and humidity separately.',
+        'HVAC: all-air systems (VAV), air-water and all-water systems (fan coils), and packaged rooftop units. Dedicated outdoor air systems handle ventilation and humidity separately. Variable refrigerant flow (VRF) systems pipe refrigerant to indoor units; with heat recovery, some zones can heat while others cool at the same time.',
         'Plumbing: fixture counts come from the plumbing code based on occupant load.',
         'Electrical and lighting: lighting power density limits come from the energy code.',
         'Vertical transportation: hydraulic elevators for low-rise, traction for taller buildings.',

@@ -18,6 +18,7 @@ export default [
       { h: 'Tracking time', p: [
         'Everything in practice management starts with timesheets. Hours charged to a project are direct (billable) labor; everything else is indirect: marketing, training, administration, holidays and vacation.',
         'Utilization (also called the chargeable ratio) is direct hours divided by total hours. A principal who markets all week may run at 40%; a production architect at 85% to 90%. Firm-wide targets of about 60% to 70% are common.',
+        'Direct hours turn into fees through a multiplier on direct salary. A 3.0 multiplier on $40,000 of direct salary bills $120,000: one part pays the salary, the rest covers overhead and profit. The next lesson shows how a firm sets its multiplier.',
       ] },
       { h: 'Monthly numbers to watch', list: [
         'Utilization rate: are people working on paid projects?',

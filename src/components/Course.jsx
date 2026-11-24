@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { DIVISIONS } from '../lib/are.js';
 import { lessonsFor, lessonById, loadLessons, saveLessons, recordLesson, finished, PASS_MARK } from '../lib/course/index.js';
-import { isCorrect, dealChoices } from '../lib/questions.js';
+import { isCorrect, dealChoices, lessonCheck } from '../lib/questions.js';
 import { DivisionIcon } from './Home.jsx';
 import { loadPath, stage, steps, recordDay, quizPassed, examPassed, lessonsDone, QUIZ_PASS, QUIZ_SIZE, EXAM_PASS } from '../lib/path.js';
 
@@ -121,7 +121,7 @@ export function Lesson({ id }) {
 }
 
 function Check({ lesson, next }) {
-  const questions = useMemo(() => dealChoices(lesson.quiz), [lesson.id]);
+  const questions = useMemo(() => dealChoices(lessonCheck(lesson)), [lesson.id]);
   const [picked, setPicked] = useState({});
   const [result, setResult] = useState(null);
   const pick = (q, k) => {

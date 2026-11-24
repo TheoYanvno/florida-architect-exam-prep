@@ -21,6 +21,7 @@ export default [
         'Neighboring buildings set height, scale, material and street patterns that a new building should respond to.',
         'Historic districts may require design review.',
         'Transit, walking routes and views are part of the site\'s value.',
+        'Hard, dark surfaces soak up sun and make cities hotter than the land around them (the urban heat island). Reflective roofs, green roofs, shade trees and light-colored paving reduce it.',
       ] },
       { h: 'Reading topography', p: [
         'Contour lines join points at the same elevation. Closely spaced lines mean steep slopes; widely spaced lines mean gentle slopes. Slope is rise over run: a 5-foot rise over 100 feet is 5%. Slopes up to about 5% are easy to build on and walk; ramps for accessibility max out at 1:12 (8.33%).',
@@ -65,6 +66,10 @@ export default [
       ] },
       { h: 'Other rules on the land', p: [
         'Easements give others rights to use part of a site (utilities, access). Deed restrictions and covenants are private limits recorded with the property. Environmental rules protect wetlands and floodplains, and in Florida, coastal construction control lines limit building near beaches.',
+      ] },
+      { h: 'The building code and accessibility', p: [
+        'Zoning decides what may go on a site; the building code decides how it is built. Early in programming, classify the building by occupancy under the International Building Code (IBC), because the group drives exits, fire protection and allowable size. Assembly is group A: restaurants and bars with 50 or more occupants are A-2 (smaller ones may be classified as B, Business). Offices are B, schools through 12th grade E, stores M, and hotels and apartments R.',
+        'Accessibility rules shape the site too. Under the 2010 ADA Standards, an accessible route steeper than 1:20 is a ramp, and a ramp may be no steeper than 1:12 (one inch of rise per foot of run), so the grades between parking, entrances and walks matter from the start.',
       ] },
     ],
     example: { title: 'How tall must it be?', steps: [

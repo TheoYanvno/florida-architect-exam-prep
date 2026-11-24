@@ -45,3 +45,16 @@ test('finishing lessons: the best check counts and the pass mark finishes a less
   saveLessons({ [id]: 80, bogus: 90, [LESSONS[1].id]: 'x' }, store);
   assert.deepEqual(loadLessons(store), { [id]: 80 });
 });
+
+test('every practice question is in exactly one lesson check, after the lesson\'s own questions', async () => {
+  const { PRACTICE_QUESTIONS, lessonCheck } = await import('../src/lib/questions.js');
+  const { LESSONS } = await import('../src/lib/course/index.js');
+  const seen = LESSONS.flatMap(l => lessonCheck(l).slice(l.quiz.length).map(q => q.id));
+  assert.equal(seen.length, PRACTICE_QUESTIONS.length);
+  assert.equal(new Set(seen).size, PRACTICE_QUESTIONS.length);
+  for (const l of LESSONS) {
+    const check = lessonCheck(l);
+    assert.ok(check.length >= 5 && check.length <= 7, l.id);
+    assert.deepEqual(check.slice(0, l.quiz.length), l.quiz);
+  }
+});

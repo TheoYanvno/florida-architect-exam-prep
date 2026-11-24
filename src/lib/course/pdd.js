@@ -51,6 +51,7 @@ export default [
     parts: [
       { h: 'The contract documents', p: [
         'The contract documents are the agreement, the conditions of the contract (general, supplementary and other), the drawings, the specifications, addenda issued before signing, and modifications after. Drawings show quantity, location, relationship and size; specifications describe quality: materials, products, workmanship and standards.',
+        'Under AIA A201 the contract documents are complementary: what one requires is as binding as if all of them required it. Neither the drawings nor the specifications automatically win, so the contractor is bound by both.',
         'Say each thing once, in the right place. Don\'t repeat specification requirements in drawing notes, where the two can drift apart.',
       ] },
       { h: 'How a set is organized', p: [

@@ -30,7 +30,7 @@ It opens full screen from its own icon, keeps your progress on the phone, and wo
 
 Like CodeForge, each division is a path in three steps:
 
-1. **Lessons.** One lesson for each NCARB content section. Each one teaches the material, works the numbers, sums up what to remember and ends with a four-question check (75% finishes it).
+1. **Lessons.** One lesson for each NCARB content section. Each one teaches the material, works the numbers, sums up what to remember and ends with a check: four questions on the lesson plus the division's practice questions on that section, five to seven in all (75% finishes it).
 2. **Division quiz.** Unlocks when every lesson is finished: 10 questions on what the lessons taught, with the answer and explanation after each one. Pass with 75%.
 3. **Practice exam.** Unlocks when the quiz is passed: every question for the division, including 10 you won't have seen in a lesson or quiz. As on the real exam, you don't see answers until you submit, and you can flag questions and jump between them. The timer keeps the real division's pace. Pass with 70%; results are broken down by NCARB section.
 
@@ -38,7 +38,7 @@ Pass all three to earn the division's badge. **Achievements** award points (20 p
 
 ## What it covers
 
-- **A full course:** 27 lessons, one for each NCARB content section of the six divisions (about 5½ hours of reading). Each lesson teaches the material in plain words, works examples where numbers matter (fees, earned value, FAR, exit separation, stairs, payment applications), sums up what to remember, and ends with a four-question check; 75% finishes the lesson
+- **A full course:** 27 lessons, one for each NCARB content section of the six divisions (about 5½ hours of reading). Each lesson teaches the material in plain words, works examples where numbers matter (fees, earned value, FAR, exit separation, stairs, payment applications), sums up what to remember, and ends with a check of five to seven questions (four on the lesson plus the practice questions on that section); 75% finishes the lesson
 - Readiness for each division counts lessons finished (40%) and your best practice or exam score (60%)
 - A home screen with your overall progress, days to your goal date, divisions left and your practice average, your level and streak, a course card for each division showing your next step, and the study tools (exam divisions, flashcards and resources)
 - A Progress page to mark divisions passed, and a Profile page for your name, your dates and installing on iPhone
